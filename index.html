@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vehicle Energy Flow — 1st Law of Thermodynamics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ── Variables ─────────────────────────────────────────────────── */
+:root {
+  --bg:      #0D1117;
+  --surface: #161B27;
+  --panel:   #1E2438;
+  --border:  #2D3554;
+  --text:    #E2E8F0;
+  --muted:   #64748B;
+  --amber:   #F59E0B;
+  --heat:    #EF4444;
+  --mech:    #3B82F6;
+  --elec:    #06B6D4;
+  --useful:  #10B981;
+  --orange:  #F97316;
+  --sb:      268px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  height: 100%; background: var(--bg); color: var(--text);
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  overflow: hidden;
+}
+
+/* ── App shell ─────────────────────────────────────────────────── */
+#app { display: flex; height: 100vh; }
+
+/* ── Sidebar ───────────────────────────────────────────────────── */
+#sidebar {
+  width: var(--sb); min-width: var(--sb); flex-shrink: 0;
+  background: var(--surface); border-right: 1px solid var(--border);
+  display: flex; flex-direction: column; overflow-y: auto; z-index: 10;
+}
+.sb-head {
+  padding: 14px 15px 12px;
+  background: linear-gradient(175deg, #1a2240 0%, var(--surface) 100%);
+  border-bottom: 1px solid var(--border);
+}
+.sb-head .eye { font-size:.57rem; letter-spacing:.13em; text-transform:uppercase; color:var(--muted); margin-bottom:4px; }
+.sb-head h1   { font-size:.95rem; font-weight:700; color:var(--amber); }
+.sb-head p    { font-size:.67rem; color:var(--muted); margin-top:4px; line-height:1.45; }
+.sb-disclaimer {
+  margin-top:8px !important;
+  padding-top:8px;
+  border-top:1px solid var(--border);
+  font-size:.63rem !important;
+  color:#4B5568 !important;
+  font-style:italic;
+}
+.sb-src-link {
+  color:var(--mech); cursor:pointer; font-style:normal;
+  font-weight:500; white-space:nowrap;
+  text-decoration:underline; text-underline-offset:2px;
+}
+.sb-src-link:hover { color:var(--elec); }
+
+/* section */
+.cg { padding: 10px 14px; border-bottom: 1px solid var(--border); }
+.cg-title { font-size:.58rem; letter-spacing:.09em; text-transform:uppercase; color:var(--muted); font-weight:700; margin-bottom:9px; }
+
+/* preset buttons */
+.prow { display:flex; gap:5px; }
+.pbt {
+  flex:1; padding:7px 4px; background:var(--panel); border:1px solid var(--border);
+  border-radius:5px; color:var(--muted); font-size:.67rem; font-weight:600;
+  cursor:pointer; text-align:center; line-height:1.3; transition:all .14s;
+}
+.pbt:hover { border-color:var(--amber); color:var(--text); }
+.pbt.active { background:rgba(245,158,11,.13); border-color:var(--amber); color:var(--amber); }
+
+/* slider rows */
+.cr { margin-bottom:9px; }
+.cr:last-child { margin-bottom:0; }
+.cl { display:flex; justify-content:space-between; align-items:baseline; margin-bottom:3px; }
+.cn { font-size:.71rem; color:var(--text); }
+.cv { font-size:.73rem; font-weight:700; font-family:monospace; }
+
+input[type=range] {
+  -webkit-appearance:none; width:100%; height:3px;
+  background:var(--border); border-radius:2px; outline:none; cursor:pointer;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance:none; width:12px; height:12px; border-radius:50%;
+  background:var(--amber); cursor:pointer; box-shadow:0 0 4px rgba(245,158,11,.5);
+}
+input[type=range].s-heat::-webkit-slider-thumb   { background:var(--heat);  box-shadow:0 0 4px rgba(239,68,68,.5); }
+input[type=range].s-mech::-webkit-slider-thumb   { background:var(--mech);  box-shadow:0 0 4px rgba(59,130,246,.5); }
+input[type=range].s-useful::-webkit-slider-thumb { background:var(--useful);box-shadow:0 0 4px rgba(16,185,129,.5); }
+input[type=range].s-elec::-webkit-slider-thumb   { background:var(--elec);  box-shadow:0 0 4px rgba(6,182,212,.5); }
+
+.hint { font-size:.63rem; color:var(--muted); line-height:1.4; margin-top:4px; }
+
+/* toggle */
+.tr2 { display:flex; justify-content:space-between; align-items:center; margin-bottom:7px; }
+.tl  { font-size:.71rem; color:var(--text); }
+.tog {
+  width:36px; height:19px; background:var(--border); border-radius:10px;
+  cursor:pointer; position:relative; flex-shrink:0; transition:background .18s;
+}
+.tog.on { background:var(--elec); }
+.tog::after {
+  content:''; position:absolute; top:2.5px; left:2.5px;
+  width:14px; height:14px; border-radius:50%; background:#fff; transition:transform .18s;
+}
+.tog.on::after { transform:translateX(17px); }
+
+/* unit buttons */
+.urow { display:flex; gap:4px; margin-top:5px; }
+.ubt {
+  flex:1; padding:4px; background:var(--panel); border:1px solid var(--border);
+  border-radius:4px; color:var(--muted); font-size:.64rem; font-weight:600;
+  cursor:pointer; text-align:center; transition:all .14s;
+}
+.ubt.active { background:rgba(59,130,246,.13); border-color:var(--mech); color:var(--mech); }
+
+/* ── Main area ─────────────────────────────────────────────────── */
+#main { flex:1; display:flex; flex-direction:column; overflow:hidden; min-width:0; }
+
+/* top bar */
+#topbar {
+  flex-shrink:0; z-index:5;
+  padding:6px 16px; background:var(--surface); border-bottom:2px solid var(--border);
+  display:flex; align-items:center; gap:10px; flex-wrap:nowrap; overflow:hidden;
+}
+.tb-title { font-size:.68rem; color:var(--muted); font-weight:600; letter-spacing:.02em; white-space:nowrap; }
+.tb-sp    { flex:1; min-width:4px; }
+.eff-pill {
+  font-size:.67rem; border-radius:4px; padding:3px 9px; white-space:nowrap;
+  background:rgba(16,185,129,.12); border:1px solid rgba(16,185,129,.4);
+  color:var(--useful); font-family:monospace; font-weight:700;
+}
+.law-pill {
+  font-size:.62rem; border:1px solid var(--border); border-radius:4px;
+  padding:3px 8px; color:var(--muted); white-space:nowrap;
+}
+.law-pill em { color:var(--amber); font-style:normal; font-weight:700; }
+
+/* canvas */
+#cw { flex:1; min-height:0; position:relative; overflow:hidden; }
+#cv { position:absolute; top:0; left:0; display:block; }
+
+/* bottom cards */
+#cards {
+  flex-shrink:0; display:flex; gap:7px; padding:8px 12px;
+  background:var(--surface); border-top:1px solid var(--border);
+  overflow-x:auto;
+}
+#cards::-webkit-scrollbar { height:3px; }
+#cards::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+
+.ec {
+  flex-shrink:0; min-width:100px;
+  background:var(--panel); border-radius:7px; padding:8px 10px;
+  border:1px solid var(--border); border-top-width:2px;
+}
+.ec .ci  { font-size:.9rem; margin-bottom:2px; }
+.ec .cl2 { font-size:.56rem; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); }
+.ec .cv2 { font-size:.84rem; font-weight:700; font-family:monospace; line-height:1.1; margin-top:1px; }
+.ec .cs  { font-size:.66rem; font-family:monospace; margin-top:1px; }
+.ec .cp  { font-size:.62rem; font-weight:600; margin-top:2px; opacity:.7; }
+
+/* scrollbar */
+::-webkit-scrollbar { width:4px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--border); border-radius:2px; }
+
+/* ── Sources button ───────────────────────────────────────────── */
+.ref-btn {
+  flex-shrink:0; padding:4px 11px;
+  background:transparent; border:1px solid var(--border);
+  border-radius:4px; color:var(--muted); font-size:.67rem;
+  font-family:'Outfit',sans-serif; font-weight:500;
+  cursor:pointer; transition:all .15s; white-space:nowrap;
+  letter-spacing:.02em;
+}
+.ref-btn:hover { border-color:var(--amber); color:var(--amber); background:rgba(245,158,11,.08); }
+
+/* ── References backdrop ──────────────────────────────────────── */
+#ref-backdrop {
+  position:fixed; inset:0; background:rgba(5,8,18,.65);
+  backdrop-filter:blur(3px); z-index:100;
+  opacity:0; pointer-events:none; transition:opacity .22s ease;
+}
+#ref-backdrop.open { opacity:1; pointer-events:all; }
+
+/* ── References panel (slides in from right) ──────────────────── */
+#ref-panel {
+  position:fixed; top:0; right:0; bottom:0;
+  width:min(600px, 92vw);
+  background: linear-gradient(175deg, #1a2240 0%, #141926 100%);
+  border-left:1px solid var(--border);
+  display:flex; flex-direction:column;
+  z-index:101;
+  transform:translateX(100%);
+  transition:transform .28s cubic-bezier(.4,0,.2,1);
+  box-shadow:-12px 0 40px rgba(0,0,0,.5);
+}
+#ref-panel.open { transform:translateX(0); }
+
+/* panel header */
+#ref-hdr {
+  display:flex; justify-content:space-between; align-items:flex-start;
+  padding:22px 24px 18px; border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+.ref-eye {
+  font-size:.6rem; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--muted); margin-bottom:4px; font-weight:600;
+}
+.ref-h2 {
+  font-size:1.3rem; font-weight:700; color:var(--amber);
+  font-family:'Outfit',sans-serif; line-height:1;
+}
+.ref-x {
+  background:transparent; border:1px solid var(--border);
+  border-radius:6px; color:var(--muted); font-size:.85rem;
+  width:30px; height:30px; cursor:pointer; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  transition:all .14s; font-family:sans-serif;
+}
+.ref-x:hover { border-color:var(--heat); color:var(--heat); }
+
+/* scrollable body */
+#ref-body {
+  flex:1; overflow-y:auto; padding:18px 24px;
+}
+#ref-body::-webkit-scrollbar { width:5px; }
+#ref-body::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
+
+/* section grouping */
+.rs { margin-bottom:24px; }
+.rs-title {
+  font-size:.72rem; font-weight:700; letter-spacing:.07em;
+  text-transform:uppercase; color:var(--amber);
+  font-family:'Outfit',sans-serif;
+  padding-bottom:7px; border-bottom:1px solid var(--border);
+  margin-bottom:10px;
+}
+
+/* individual reference item */
+.ri {
+  display:flex; flex-direction:column; gap:3px;
+  padding:9px 10px; border-radius:6px; margin-bottom:6px;
+  background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.05);
+  transition:background .12s;
+}
+.ri:hover { background:rgba(255,255,255,.055); }
+.rf {
+  font-size:.78rem; color:var(--text); line-height:1.45;
+  font-family:'Outfit',sans-serif; font-weight:500;
+}
+.rc {
+  font-size:.68rem; color:var(--muted); line-height:1.45;
+  font-family:'Outfit',sans-serif; font-style:italic;
+}
+.rc a {
+  color:var(--mech); text-decoration:none; font-style:normal;
+  font-weight:500;
+}
+.rc a:hover { text-decoration:underline; color:var(--elec); }
+
+/* footer */
+#ref-foot {
+  flex-shrink:0; padding:14px 24px;
+  border-top:1px solid var(--border);
+  font-size:.65rem; color:var(--muted); line-height:1.5;
+  font-family:'Outfit',sans-serif; font-style:italic;
+  background:rgba(0,0,0,.2);
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ═══════════════ SIDEBAR ═══════════════ -->
+<aside id="sidebar">
+  <div class="sb-head">
+    <div class="eye">Physics Simulator</div>
+    <h1>Vehicle Energy Flow</h1>
+    <p>Every joule is accounted for. Trace where fuel energy goes and how much you pay at each stage.</p>
+    <p class="sb-disclaimer">Values are drawn from the sources listed in <span class="sb-src-link" onclick="toggleRefs()">📚 Sources</span> and are representative ranges. This tool provides a general overview for <em>educational purposes only</em>.</p>
+  </div>
+
+  <!-- Vehicle type -->
+  <div class="cg">
+    <div class="cg-title">🚗 Vehicle Type</div>
+    <div class="prow">
+      <button class="pbt active" id="pbt-gas"    onclick="setPreset('gas')">⛽<br>Gasoline</button>
+      <button class="pbt"        id="pbt-hybrid" onclick="setPreset('hybrid')">🔋<br>Hybrid</button>
+      <button class="pbt"        id="pbt-ev"     onclick="setPreset('ev')">⚡<br>Electric</button>
+    </div>
+  </div>
+
+  <!-- Fuel -->
+  <div class="cg">
+    <div class="cg-title" id="fuel-cg">⛽ Fuel Input</div>
+    <div class="cr">
+      <div class="cl"><span class="cn" id="fuel-lbl">Gasoline (gallons)</span><span class="cv" id="v-fuel" style="color:var(--amber)">1.0 gal</span></div>
+      <input type="range" id="r-fuel" min="0.5" max="20" step="0.1" value="1">
+    </div>
+    <div class="cr">
+      <div class="cl"><span class="cn" id="price-lbl">Price ($/gallon)</span><span class="cv" id="v-price" style="color:var(--useful)">$3.50</span></div>
+      <input type="range" class="s-useful" id="r-price" min="1.0" max="8.0" step="0.05" value="3.5">
+    </div>
+  </div>
+
+  <!-- Engine -->
+  <div class="cg">
+    <div class="cg-title" id="eng-cg">🔥 Engine Efficiency</div>
+    <div class="cr">
+      <div class="cl"><span class="cn" id="eng-lbl">Thermal Efficiency</span><span class="cv" id="v-eng" style="color:var(--heat)">25%</span></div>
+      <input type="range" class="s-heat" id="r-eng" min="8" max="48" step="0.5" value="25">
+    </div>
+    <div class="hint">Remaining <strong id="eng-waste" style="color:var(--heat)">75%</strong> exits as exhaust &amp; heat — a fundamental thermodynamic limit.</div>
+  </div>
+
+  <!-- Drivetrain -->
+  <div class="cg">
+    <div class="cg-title">⚙️ Drivetrain</div>
+    <div class="cr">
+      <div class="cl"><span class="cn">Drivetrain Efficiency</span><span class="cv" id="v-dt" style="color:var(--mech)">94%</span></div>
+      <input type="range" class="s-mech" id="r-dt" min="70" max="99" step="0.5" value="94">
+    </div>
+    <div class="hint">Transmission, driveshaft &amp; differential friction.</div>
+  </div>
+
+  <!-- Road forces -->
+  <div class="cg">
+    <div class="cg-title">🛣️ Road Forces (% of wheel power)</div>
+    <div class="cr">
+      <div class="cl"><span class="cn">Aerodynamic Drag</span><span class="cv" id="v-aero" style="color:var(--orange)">10%</span></div>
+      <input type="range" id="r-aero" min="2" max="40" step="1" value="10">
+    </div>
+    <div class="cr">
+      <div class="cl"><span class="cn">Rolling Resistance</span><span class="cv" id="v-roll" style="color:var(--orange)">12%</span></div>
+      <input type="range" id="r-roll" min="2" max="30" step="1" value="12">
+    </div>
+    <div class="cr">
+      <div class="cl"><span class="cn">Braking Energy Fraction</span><span class="cv" id="v-brake" style="color:var(--heat)">25%</span></div>
+      <input type="range" class="s-heat" id="r-brake" min="5" max="65" step="1" value="25">
+    </div>
+  </div>
+
+  <!-- Braking -->
+  <div class="cg">
+    <div class="cg-title">🛑 Braking</div>
+    <div class="tr2">
+      <span class="tl">Regenerative Braking</span>
+      <div class="tog" id="regen-tog" onclick="toggleRegen()"></div>
+    </div>
+    <div id="regen-ctrls" style="display:none">
+      <div class="cr">
+        <div class="cl"><span class="cn">Regen Efficiency</span><span class="cv" id="v-regen" style="color:var(--elec)">65%</span></div>
+        <input type="range" class="s-elec" id="r-regen" min="20" max="85" step="1" value="65">
+      </div>
+    </div>
+    <div class="hint" id="brake-hint">Conventional brakes convert all kinetic energy to <strong style="color:var(--heat)">heat</strong>.</div>
+  </div>
+
+  <!-- Display -->
+  <div class="cg">
+    <div class="cg-title">📊 Display</div>
+    <div class="tr2">
+      <span class="tl">Show Dollar Costs</span>
+      <div class="tog on" id="money-tog" onclick="toggleMoney()"></div>
+    </div>
+    <div style="font-size:.63rem;color:var(--muted);margin-bottom:4px">Energy Units:</div>
+    <div class="urow">
+      <button class="ubt"        id="u-pct" onclick="setUnit('pct')">%</button>
+      <button class="ubt active" id="u-kJ"  onclick="setUnit('kJ')">kJ</button>
+      <button class="ubt"        id="u-kWh" onclick="setUnit('kWh')">kWh</button>
+    </div>
+  </div>
+</aside>
+
+<!-- ═══════════════ MAIN ═══════════════ -->
+<div id="main">
+  <div id="topbar">
+    <div class="tb-title">1st Law of Thermodynamics</div>
+    <div class="tb-sp"></div>
+    <div class="eff-pill" id="eff-pill">Efficiency: —</div>
+    <div class="law-pill"><em>E_in = E_out</em> · energy transforms, never disappears</div>
+    <button class="ref-btn" onclick="toggleRefs()">📚 Sources</button>
+  </div>
+  <div id="cw"><canvas id="cv"></canvas></div>
+  <div id="cards"></div>
+</div>
+</div>
+
+<script>
+'use strict';
+
+/* ── Constants ─────────────────────────────────────────────────── */
+const KJ_GAL = 132000;
+const KJ_KWH = 3600;
+
+/* ── State ─────────────────────────────────────────────────────── */
+const S = {
+  preset:'gas', fuelType:'gasoline',
+  fuelAmt:1.0, fuelPrice:3.50,
+  engEff:25, dtEff:94,
+  aeroFrac:10, rollFrac:12, brakeFrac:25,
+  isRegen:false, regenEff:65,
+  showMoney:true, unit:'kJ',
+};
+
+const PRESETS = {
+  gas:    { fuelType:'gasoline', fuelAmt:1.0,  fuelPrice:3.50, engEff:25, dtEff:94, aeroFrac:10, rollFrac:12, brakeFrac:28, isRegen:false, regenEff:0  },
+  hybrid: { fuelType:'gasoline', fuelAmt:1.0,  fuelPrice:3.50, engEff:28, dtEff:95, aeroFrac:10, rollFrac:12, brakeFrac:28, isRegen:true,  regenEff:65 },
+  ev:     { fuelType:'electric', fuelAmt:10,   fuelPrice:0.15, engEff:90, dtEff:97, aeroFrac:10, rollFrac:12, brakeFrac:28, isRegen:true,  regenEff:72 },
+};
+
+/* ── Energy model ─────────────────────────────────────────────── */
+function E() {
+  const fuelKJ = S.fuelType==='gasoline' ? S.fuelAmt*KJ_GAL : S.fuelAmt*KJ_KWH;
+  const cpkj   = S.fuelType==='gasoline' ? S.fuelPrice/KJ_GAL : S.fuelPrice/KJ_KWH;
+
+  const engOut  = fuelKJ  * (S.engEff /100);
+  const engHeat = fuelKJ  - engOut;
+  const wpwr    = engOut  * (S.dtEff  /100);
+  const dtLoss  = engOut  - wpwr;
+  const aero    = wpwr    * (S.aeroFrac/100);
+  const roll    = wpwr    * (S.rollFrac/100);
+  const prop    = wpwr    - aero - roll;
+  const brkE    = prop    * (S.brakeFrac/100);
+  const netKE   = prop    - brkE;
+  const regen   = S.isRegen ? brkE*(S.regenEff/100) : 0;
+  const brkHeat = brkE    - regen;
+
+  const useful  = aero + roll + netKE + regen;
+  const eff     = useful/fuelKJ*100;
+
+  // conservation check
+  const sum = engHeat+dtLoss+aero+roll+brkHeat+regen+netKE;
+
+  return { fuelKJ,cpkj, engOut,engHeat, wpwr,dtLoss, aero,roll,prop, brkE,brkHeat,regen,netKE, useful,eff, sum };
+}
+
+/* ── Formatting ───────────────────────────────────────────────── */
+function fmtE(kj, total) {
+  if (S.unit==='pct') return (kj/total*100).toFixed(1)+'%';
+  if (S.unit==='kWh') {
+    const v=kj/KJ_KWH;
+    return v>=1 ? v.toFixed(2)+' kWh' : (v*1000).toFixed(0)+' Wh';
+  }
+  if (kj>=1e6)  return (kj/1e6).toFixed(2)+' GJ';
+  if (kj>=1000) return (kj/1000).toFixed(2)+' MJ';
+  return kj.toFixed(0)+' kJ';
+}
+function fmtD(kj,cpkj) {
+  const d=kj*cpkj;
+  if (d<0.001) return '<$0.01';
+  if (d<1)     return '$'+d.toFixed(3);
+  return '$'+d.toFixed(2);
+}
+
+/* ── Canvas ───────────────────────────────────────────────────── */
+const cv = document.getElementById('cv');
+const cx = cv.getContext('2d');
+let W=0, H=0;
+
+function resize() {
+  const wrap = document.getElementById('cw');
+  const nW = wrap.clientWidth, nH = wrap.clientHeight;
+  if (nW > 0 && nH > 0 && (nW !== W || nH !== H)) {
+    const dpr = window.devicePixelRatio || 1;
+    // Physical pixels = logical × dpr  →  crisp on retina/HiDPI screens
+    cv.width  = Math.round(nW * dpr);
+    cv.height = Math.round(nH * dpr);
+    cv.style.width  = nW + 'px';
+    cv.style.height = nH + 'px';
+    W = nW; H = nH;
+  }
+}
+window.addEventListener('resize', resize);
+if (window.ResizeObserver) {
+  new ResizeObserver(resize).observe(document.getElementById('cw'));
+}
+
+/* ── Particles ────────────────────────────────────────────────── */
+let parts = [];
+let spT = { main:0, h:[0,0,0,0], regen:0 };
+
+class P {
+  constructor(x,y,vx,vy,col,sz,life) {
+    this.x=x; this.y=y; this.vx=vx; this.vy=vy;
+    this.col=col; this.sz=sz; this.life=life; this.ml=life;
+  }
+  tick(dt) {
+    this.x+=this.vx*dt; this.y+=this.vy*dt;
+    this.life-=dt*(1/this.ml)*1;
+    if(this.life<=0||this.x>W+20||this.y<-30) this.life=-1;
+  }
+  draw() {
+    cx.save();
+    cx.globalAlpha=Math.max(0,Math.min(1,this.life));
+    cx.beginPath(); cx.arc(this.x,this.y,this.sz,0,Math.PI*2);
+    cx.fillStyle=this.col; cx.shadowBlur=5; cx.shadowColor=this.col;
+    cx.fill(); cx.restore();
+  }
+}
+
+function spawnParts(dt, en, sxs, cy2, mH, fracs) {
+  /* Main flow */
+  spT.main-=dt;
+  if(spT.main<=0) {
+    spT.main=0.07;
+    const si=Math.floor(Math.random()*(sxs.length-1));
+    const t=Math.random();
+    const px=sxs[si]+t*(sxs[si+1]-sxs[si]);
+    const fh=(fracs[si]+t*(fracs[si+1]-fracs[si]))*mH;
+    const py=cy2-fh/2+Math.random()*fh;
+    const prog=(si+t)/(sxs.length-1);
+    const r=Math.round(245+prog*(59-245));
+    const g=Math.round(158+prog*(130-158));
+    const b=Math.round(11+prog*(246-11));
+    parts.push(new P(px,py, 70+Math.random()*40, (Math.random()-.5)*5,
+      `rgb(${r},${g},${b})`, 2+Math.random()*1.3, 0.8+Math.random()*0.5));
+  }
+
+  /* Heat loss particles at each stage */
+  const lf=[en.engHeat,en.dtLoss,en.aero+en.roll,en.brkHeat].map(v=>v/en.fuelKJ);
+  for(let i=0;i<4;i++){
+    spT.h[i]=(spT.h[i]||0)-dt;
+    if(spT.h[i]<=0 && lf[i]>0.003){
+      spT.h[i]=0.09/(lf[i]*6+0.4);
+      const nx=sxs[i+1];
+      const fh=fracs[i+1]*mH;
+      const py=cy2-fh/2-3;
+      const lw=lf[i]*mH;
+      const px=nx+(Math.random()-.5)*lw*0.5;
+      const col=i===0||i===3?'#F87171':'#FB923C';
+      parts.push(new P(px,py, (Math.random()-.5)*15, -(25+Math.random()*45),
+        col, 1.6+Math.random()*1.2, 0.9+Math.random()*0.7));
+    }
+  }
+
+  /* Regen */
+  if(S.isRegen&&en.regen>0.5){
+    spT.regen-=dt;
+    if(spT.regen<=0){
+      spT.regen=0.12/(en.regen/en.fuelKJ*4+0.3);
+      const nx=sxs[4]; const fh=fracs[4]*mH;
+      parts.push(new P(nx,cy2+fh/2+4, (Math.random()-.5)*12, 15+Math.random()*20,
+        '#67E8F9',2+Math.random(),0.8+Math.random()*0.4));
+    }
+  }
+
+  if(parts.length>600) parts.splice(0,parts.length-600);
+}
+
+/* ── Sankey Drawing ───────────────────────────────────────────── */
+function rrect(x,y,w,h,r){
+  cx.beginPath();
+  cx.moveTo(x+r,y); cx.lineTo(x+w-r,y); cx.arcTo(x+w,y,x+w,y+r,r);
+  cx.lineTo(x+w,y+h-r); cx.arcTo(x+w,y+h,x+w-r,y+h,r);
+  cx.lineTo(x+r,y+h); cx.arcTo(x,y+h,x,y+h-r,r);
+  cx.lineTo(x,y+r); cx.arcTo(x,y,x+r,y,r); cx.closePath();
+}
+
+function band(x0,x1,cy2,h0,h1,cl,cr){
+  const mx=(x0+x1)/2;
+  const g=cx.createLinearGradient(x0,0,x1,0);
+  g.addColorStop(0,cl); g.addColorStop(1,cr);
+  cx.beginPath();
+  cx.moveTo(x0,cy2-h0/2);
+  cx.bezierCurveTo(mx,cy2-h0/2,mx,cy2-h1/2,x1,cy2-h1/2);
+  cx.lineTo(x1,cy2+h1/2);
+  cx.bezierCurveTo(mx,cy2+h1/2,mx,cy2+h0/2,x0,cy2+h0/2);
+  cx.closePath();
+  cx.fillStyle=g; cx.fill();
+  /* top edge highlight */
+  cx.save(); cx.globalAlpha=.12; cx.strokeStyle='#fff'; cx.lineWidth=1;
+  cx.beginPath(); cx.moveTo(x0,cy2-h0/2+1);
+  cx.bezierCurveTo(mx,cy2-h0/2+1,mx,cy2-h1/2+1,x1,cy2-h1/2+1);
+  cx.stroke(); cx.restore();
+}
+
+function lossStream(nx,topY,lw,sh,col,alpha){
+  if(lw<1)return;
+  const sp=Math.max(lw*1.4,10);
+  cx.save(); cx.globalAlpha=alpha||0.6;
+  const g=cx.createLinearGradient(nx,topY,nx,topY-sh);
+  g.addColorStop(0,col); g.addColorStop(1,'transparent');
+  cx.fillStyle=g;
+  cx.beginPath();
+  cx.moveTo(nx-lw/2,topY);
+  cx.bezierCurveTo(nx-sp/2,topY-sh*.45,nx-2,topY-sh,nx,topY-sh);
+  cx.bezierCurveTo(nx+2,topY-sh,nx+sp/2,topY-sh*.45,nx+lw/2,topY);
+  cx.closePath(); cx.fill(); cx.restore();
+}
+
+function regenStream(nx,botY,rw,col){
+  if(rw<1)return;
+  cx.save(); cx.globalAlpha=0.55;
+  const g=cx.createLinearGradient(nx,botY,nx,botY+50);
+  g.addColorStop(0,col); g.addColorStop(1,'transparent');
+  cx.fillStyle=g;
+  cx.beginPath();
+  cx.moveTo(nx-rw/2,botY);
+  cx.bezierCurveTo(nx-rw*1.3,botY+25,nx-2,botY+50,nx,botY+50);
+  cx.bezierCurveTo(nx+2,botY+50,nx+rw*1.3,botY+25,nx+rw/2,botY);
+  cx.closePath(); cx.fill(); cx.restore();
+}
+
+/* Text helpers */
+function tAt(txt,x,y,font,col,align,base){
+  cx.save(); cx.font=font; cx.fillStyle=col;
+  cx.textAlign=align||'center'; cx.textBaseline=base||'alphabetic';
+  cx.fillText(txt,x,y); cx.restore();
+}
+
+let lastTS=0;
+function frame(ts){
+  const dt=Math.min((ts-lastTS)/1000,.05); lastTS=ts;
+  const dpr = window.devicePixelRatio || 1;
+  cx.clearRect(0, 0, cv.width, cv.height);
+  if(W<80||H<80){ requestAnimationFrame(frame); return; }
+  // Scale all drawing to logical pixels — makes text sharp on HiDPI/retina
+  cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  const en=E();
+
+  /* ── Adaptive layout ── */
+  const wide = W > 700;
+  const PL = wide ? 80 : 20;
+  const PR = wide ? 40 : 14;
+  const PT = 22, PB = wide ? 58 : 48;
+  const gW = W-PL-PR, gH = H-PT-PB;
+
+  const maxH   = Math.min(120, gH*0.30, gW*0.22);
+  const flowCY = PT + gH * (wide ? 0.60 : 0.62);
+  const lossUp = Math.min(flowCY - PT - 22, gH*0.40);
+
+  /* Stage x-positions — spread across full width */
+  const SF = [0.03, 0.24, 0.46, 0.67, 0.89];
+  const sxs = SF.map(f => PL + f*gW);
+
+  /* Energy fractions at each stage */
+  const fracs = [
+    1,
+    en.engOut/en.fuelKJ,
+    en.wpwr/en.fuelKJ,
+    en.prop/en.fuelKJ,
+    (en.netKE+en.regen)/en.fuelKJ,
+  ];
+  const hs = fracs.map(f => Math.max(3, f*maxH));
+
+  /* ── Flow bands ── */
+  const FC = [
+    ['rgba(245,158,11,.85)','rgba(249,115,22,.78)'],
+    ['rgba(249,115,22,.78)','rgba(59,130,246,.78)'],
+    ['rgba(59,130,246,.78)','rgba(59,130,246,.74)'],
+    ['rgba(59,130,246,.74)','rgba(16,185,129,.76)'],
+  ];
+  for(let i=0;i<4;i++) band(sxs[i]+7,sxs[i+1]-7,flowCY,hs[i],hs[i+1],FC[i][0],FC[i][1]);
+
+  /* ── Loss streams ── */
+  const losses=[
+    { e:en.engHeat,       col:'#EF4444', label:'Engine Heat Loss' },
+    { e:en.dtLoss,        col:'#F97316', label:'Drivetrain Friction' },
+    { e:en.aero+en.roll,  col:'#FB923C', label:'Aero + Rolling' },
+    { e:en.brkHeat,       col:'#EF4444', label:S.isRegen?'Braking Heat':'Braking → Heat' },
+  ];
+
+  /* Loss stream heights scale relative to each other for visual clarity */
+  losses.forEach((ls,i)=>{
+    const frac=ls.e/en.fuelKJ;
+    const lw=Math.max(1.5, frac*maxH);
+    const topY=flowCY-hs[i+1]/2;
+    /* Scale stream height: tallest stream gets lossUp, others proportional */
+    const maxFrac=en.engHeat/en.fuelKJ;
+    const sh=Math.max(20, lossUp * Math.sqrt(frac/maxFrac) * 0.9 + 8);
+    lossStream(sxs[i+1], topY, lw, sh, ls.col, 0.42+frac*0.5);
+
+    /* Label — always at a fixed y above the flow center so they're on one baseline */
+    const baseLabelY = flowCY - lossUp - 30;
+    const pct=(frac*100).toFixed(1)+'%';
+    const disp=fmtE(ls.e,en.fuelKJ);
+    const dol=S.showMoney ? fmtD(ls.e,en.cpkj) : '';
+    const lx=Math.max(50,Math.min(W-50,sxs[i+1]));
+
+    /* Connector dot at tip of stream */
+    cx.save();
+    cx.beginPath(); cx.arc(lx, topY-sh, 2.5, 0, Math.PI*2);
+    cx.fillStyle=ls.col; cx.globalAlpha=0.8; cx.fill();
+    cx.restore();
+
+    cx.save();
+    cx.textAlign='center'; cx.textBaseline='bottom';
+    cx.font=`600 ${wide?14:11}px Outfit,sans-serif`;
+    cx.fillStyle=ls.col;
+    cx.fillText(ls.label, lx, baseLabelY);
+    cx.font=`500 ${wide?12:10}px 'JetBrains Mono',monospace`; cx.fillStyle='#CBD5E1';
+    cx.fillText(pct+'  '+disp, lx, baseLabelY+13);
+    if(S.showMoney&&dol){
+      cx.fillStyle='#10B981'; cx.globalAlpha=0.85;
+      cx.fillText(dol, lx, baseLabelY+24);
+    }
+    cx.restore();
+
+    /* Dashed connector line from label to stream tip */
+    cx.save(); cx.globalAlpha=0.2; cx.strokeStyle=ls.col;
+    cx.lineWidth=1; cx.setLineDash([2,3]);
+    cx.beginPath(); cx.moveTo(lx, baseLabelY+2); cx.lineTo(lx, topY-sh+4);
+    cx.stroke(); cx.restore();
+  });
+
+  /* ── Regen stream + label ── */
+  if(S.isRegen && en.regen>0.5){
+    const rw=Math.max(2,(en.regen/en.fuelKJ)*maxH);
+    const botY=flowCY+hs[4]/2;
+    regenStream(sxs[4], botY, rw, '#06B6D4');
+    const disp=fmtE(en.regen,en.fuelKJ);
+    const dol=S.showMoney?fmtD(en.regen,en.cpkj):'';
+    cx.save(); cx.textAlign='center'; cx.textBaseline='top';
+    cx.font=`600 ${wide?14:11}px Outfit,sans-serif`; cx.fillStyle='#06B6D4';
+    cx.fillText('⟳  Recovered: '+disp+(S.showMoney&&dol?' · '+dol:''), sxs[4], botY+54);
+    cx.restore();
+  }
+
+  /* ── Stage nodes & staggered labels ── */
+  const nLabels = ['Fuel In','Engine Out','Wheel Power','Propulsion','Net Output'];
+  const nCols   = ['#F59E0B','#EF4444','#3B82F6','#3B82F6','#10B981'];
+  const nVals   = [en.fuelKJ,en.engOut,en.wpwr,en.prop,en.netKE+en.regen];
+  /* Alternate label depths: even indices shallow, odd deep — prevents adjacent overlap */
+  const labelDepths = [0, 22, 0, 22, 0];
+
+  sxs.forEach((sx,i)=>{
+    const nh=hs[i], nw=10;
+    /* Node bar */
+    cx.save();
+    const gn=cx.createLinearGradient(sx,flowCY-nh/2,sx,flowCY+nh/2);
+    gn.addColorStop(0,nCols[i]+'EE'); gn.addColorStop(1,nCols[i]+'55');
+    rrect(sx-nw/2, flowCY-nh/2, nw, nh, 3);
+    cx.fillStyle=gn; cx.fill();
+    cx.strokeStyle=nCols[i]; cx.lineWidth=1.5; cx.stroke();
+    cx.restore();
+
+    /* Label below — staggered */
+    const v=nVals[i];
+    const disp=fmtE(v,en.fuelKJ);
+    const pct=(v/en.fuelKJ*100).toFixed(1)+'%';
+    const dol=S.showMoney?fmtD(v,en.cpkj):'';
+    const baseY = flowCY + Math.max(nh/2, 6) + 8 + labelDepths[i];
+
+    /* Tick line from node bottom to label */
+    if(labelDepths[i]>0){
+      cx.save(); cx.globalAlpha=0.25; cx.strokeStyle=nCols[i]; cx.lineWidth=1; cx.setLineDash([2,3]);
+      cx.beginPath(); cx.moveTo(sx, flowCY+nh/2+2); cx.lineTo(sx, baseY-1);
+      cx.stroke(); cx.restore();
+    }
+
+    cx.save(); cx.textAlign='center'; cx.textBaseline='top';
+    cx.font=`600 ${wide?14:11}px Outfit,sans-serif`; cx.fillStyle=nCols[i];
+    cx.fillText(nLabels[i], sx, baseY);
+    cx.font=`500 ${wide?12:10}px 'JetBrains Mono',monospace`; cx.fillStyle='#94A3B8';
+    cx.fillText(disp+'  '+pct, sx, baseY+13);
+    if(S.showMoney&&dol){ cx.fillStyle=nCols[i]; cx.globalAlpha=.7; cx.fillText(dol, sx, baseY+24); }
+    cx.restore();
+  });
+
+  /* ── "Money wasted" callout box (top-right) ── */
+  if(S.showMoney && wide){
+    const totalWasted = en.engHeat + en.dtLoss + en.brkHeat;
+    const rx = W - PR - 10, ry = PT + 6;
+    const line1 = '🔥  Heat wasted: ' + fmtD(totalWasted,en.cpkj) + ' / ' + fmtD(en.fuelKJ,en.cpkj);
+    const line2 = (totalWasted/en.fuelKJ*100).toFixed(1) + '% of fuel becomes useless heat — 1st Law cannot be avoided';
+    /* Measure both lines so the box always wraps the text exactly */
+    const padX = 12, padY = 8, lineGap = 5;
+    cx.font = '600 14px Outfit,sans-serif';
+    const w1 = cx.measureText(line1).width;
+    cx.font = '400 11px Outfit,sans-serif';
+    const w2 = cx.measureText(line2).width;
+    const boxW = Math.max(w1, w2) + padX * 2;
+    const boxH = padY + 14 + lineGap + 11 + padY;
+    /* background pill */
+    cx.save();
+    cx.globalAlpha = 0.88;
+    rrect(rx - boxW, ry, boxW, boxH, 6);
+    cx.fillStyle = 'rgba(30,10,10,0.75)'; cx.fill();
+    cx.strokeStyle = '#7F1D1D'; cx.lineWidth = 1; cx.stroke();
+    cx.restore();
+    cx.save();
+    cx.textAlign = 'right'; cx.textBaseline = 'top';
+    cx.font = '600 14px Outfit,sans-serif'; cx.fillStyle = '#F87171';
+    cx.fillText(line1, rx - padX, ry + padY);
+    cx.font = '400 11px Outfit,sans-serif'; cx.fillStyle = '#94A3B8';
+    cx.fillText(line2, rx - padX, ry + padY + 14 + lineGap);
+    cx.restore();
+  }
+
+  /* ── Inter-stage efficiency mini-labels (under mid-band) ── */
+  const iEffs = [
+    en.engOut/en.fuelKJ,
+    en.wpwr/en.engOut,
+    en.prop/en.wpwr,
+    (en.netKE+en.regen)/en.prop,
+  ];
+  const iStage = ['Engine','DT','Road','Brake'];
+  for(let i=0;i<4;i++){
+    const midX = (sxs[i]+sxs[i+1])/2;
+    const avgH = (hs[i]+hs[i+1])/2;
+    cx.save(); cx.textAlign='center'; cx.textBaseline='top';
+    cx.font=`500 ${wide?11:9}px 'JetBrains Mono',monospace`; cx.fillStyle='#475569';
+    cx.fillText((iEffs[i]*100).toFixed(0)+'% →', midX, flowCY+avgH/2+34);
+    cx.restore();
+  }
+
+  /* ── Conservation note (very dim) ── */
+  cx.save(); cx.textAlign='right'; cx.textBaseline='top';
+  cx.font='400 italic 11px Outfit,sans-serif'; cx.fillStyle='#2D3748';
+  cx.fillText('Σ = '+(en.sum/en.fuelKJ*100).toFixed(1)+'%  ✓', W-PR, PT+4);
+  cx.restore();
+
+  /* ── Particles ── */
+  parts.forEach(p=>p.tick(dt));
+  parts=parts.filter(p=>p.life>0);
+  parts.forEach(p=>p.draw());
+  spawnParts(dt,en,sxs,flowCY,maxH,fracs);
+
+  requestAnimationFrame(frame);
+}
+
+/* ── Bottom cards ─────────────────────────────────────────────── */
+function buildCards() {
+  const en=E(); const c=en.cpkj;
+  // Approximate mpg/efficiency context
+  const mpg = S.fuelType==='gasoline'
+    ? (S.fuelAmt > 0 ? (en.useful / (en.fuelKJ/S.fuelAmt) * 35).toFixed(0) : '—')
+    : null;
+
+  const defs=[
+    { col:'#F59E0B', icon:'⛽', lbl:'Total Input',             e:en.fuelKJ,           sub: S.fuelType==='gasoline'?S.fuelAmt.toFixed(1)+' gal':S.fuelAmt.toFixed(1)+' kWh' },
+    { col:'#EF4444', icon:'🌡️', lbl:'Engine Heat Loss',        e:en.engHeat,          sub: S.fuelType==='gasoline'?'Exhaust + cooling':'Motor heat' },
+    { col:'#F97316', icon:'⚙️', lbl:'Drivetrain Friction',     e:en.dtLoss,           sub: 'Gears, differential' },
+    { col:'#FB923C', icon:'💨', lbl:'Aerodynamic Drag',        e:en.aero,             sub: 'Air resistance' },
+    { col:'#F97316', icon:'🛞', lbl:'Rolling Resistance',      e:en.roll,             sub: 'Tire deformation' },
+    { col:'#EF4444', icon:'🛑', lbl:S.isRegen?'Braking Heat':'Braking → Heat', e:en.brkHeat, sub: S.isRegen?'Unconverted fraction':'All KE → heat' },
+    ...(S.isRegen&&en.regen>0.5?[{ col:'#06B6D4',icon:'⟳', lbl:'Regen Recovered', e:en.regen, sub:'Back to battery ✓' }]:[]),
+    { col:'#10B981', icon:'✅', lbl:'Net Useful Work',         e:en.netKE+en.regen,   sub:'Overcomes aero+rolling' },
+  ];
+
+  const totalWasted = en.engHeat + en.dtLoss + en.brkHeat;
+
+  document.getElementById('cards').innerHTML = `
+    ${defs.map(d=>{
+      const pct=(d.e/en.fuelKJ*100).toFixed(1)+'%';
+      const disp=fmtE(d.e,en.fuelKJ);
+      const dol=S.showMoney?fmtD(d.e,c):'';
+      return `<div class="ec" style="color:${d.col};border-top-color:${d.col}">
+        <div class="ci">${d.icon}</div>
+        <div class="cl2">${d.lbl}</div>
+        <div class="cv2">${disp}</div>
+        ${dol?`<div class="cs" style="color:${d.col}">${dol}</div>`:''}
+        <div class="cp">${pct} of input</div>
+        <div style="font-size:.55rem;color:#475569;margin-top:1px">${d.sub||''}</div>
+      </div>`;
+    }).join('')}
+    ${S.showMoney ? `
+    <div class="ec" style="color:#F87171;border-top-color:#7F1D1D;min-width:130px;background:rgba(127,29,29,.15)">
+      <div class="ci">🔥</div>
+      <div class="cl2">Total Heat Wasted</div>
+      <div class="cv2">${fmtE(totalWasted,en.fuelKJ)}</div>
+      <div class="cs" style="color:#F87171">${fmtD(totalWasted,c)} thrown away</div>
+      <div class="cp">${(totalWasted/en.fuelKJ*100).toFixed(1)}% of ${fmtD(en.fuelKJ,c)} spent</div>
+      <div style="font-size:.55rem;color:#475569;margin-top:1px">E cannot be destroyed</div>
+    </div>` : ''}
+  `;
+}
+
+/* ── Efficiency pill ──────────────────────────────────────────── */
+function updatePill() {
+  const en=E();
+  const pill=document.getElementById('eff-pill');
+  pill.textContent='Overall Efficiency: '+en.eff.toFixed(1)+'%';
+  const c=en.eff>40?'#10B981':en.eff>20?'#F59E0B':'#EF4444';
+  pill.style.color=c; pill.style.borderColor=c+'55'; pill.style.background=c+'18';
+}
+
+/* ── UI Sync ─────────────────────────────────────────────────── */
+function sync() {
+  const isEV=S.fuelType==='electric';
+  document.getElementById('fuel-cg').textContent=isEV?'⚡ Energy Input':'⛽ Fuel Input';
+  document.getElementById('fuel-lbl').textContent=isEV?'Energy (kWh)':'Gasoline (gallons)';
+  document.getElementById('price-lbl').textContent=isEV?'Price ($/kWh)':'Price ($/gallon)';
+  document.getElementById('v-fuel').textContent=S.fuelAmt.toFixed(1)+(isEV?' kWh':' gal');
+  document.getElementById('v-price').textContent='$'+S.fuelPrice.toFixed(2)+(isEV?'/kWh':'/gal');
+  document.getElementById('v-eng').textContent=S.engEff+'%';
+  document.getElementById('eng-waste').textContent=(100-S.engEff)+'%';
+  document.getElementById('eng-cg').textContent=isEV?'⚡ Motor Efficiency':'🔥 Engine Efficiency';
+  document.getElementById('v-dt').textContent=S.dtEff+'%';
+  document.getElementById('v-aero').textContent=S.aeroFrac+'%';
+  document.getElementById('v-roll').textContent=S.rollFrac+'%';
+  document.getElementById('v-brake').textContent=S.brakeFrac+'%';
+  document.getElementById('v-regen').textContent=S.regenEff+'%';
+  document.getElementById('regen-tog').classList.toggle('on',S.isRegen);
+  document.getElementById('regen-ctrls').style.display=S.isRegen?'':'none';
+  document.getElementById('brake-hint').style.display=S.isRegen?'none':'';
+  document.getElementById('money-tog').classList.toggle('on',S.showMoney);
+  ['pct','kJ','kWh'].forEach(u=>document.getElementById('u-'+u).classList.toggle('active',S.unit===u));
+  ['gas','hybrid','ev'].forEach(p=>document.getElementById('pbt-'+p).classList.toggle('active',S.preset===p));
+  buildCards(); updatePill();
+}
+
+/* ── Wiring ─────────────────────────────────────────────────── */
+function wr(id,key,conv){ document.getElementById(id).addEventListener('input',e=>{ S[key]=(conv||parseFloat)(e.target.value); sync(); }); }
+wr('r-fuel','fuelAmt'); wr('r-price','fuelPrice');
+wr('r-eng','engEff'); wr('r-dt','dtEff');
+wr('r-aero','aeroFrac'); wr('r-roll','rollFrac');
+wr('r-brake','brakeFrac'); wr('r-regen','regenEff');
+
+function setPreset(p) {
+  S.preset=p; Object.assign(S,PRESETS[p]);
+  const ids=['fuel','price','eng','dt','aero','roll','brake','regen'];
+  const ks=['fuelAmt','fuelPrice','engEff','dtEff','aeroFrac','rollFrac','brakeFrac','regenEff'];
+  ids.forEach((id,i)=>{ const el=document.getElementById('r-'+id); if(el) el.value=S[ks[i]]; });
+  if(p==='ev'){ const el=document.getElementById('r-fuel'); el.min=1; el.max=80; el.step=0.5; }
+  else        { const el=document.getElementById('r-fuel'); el.min=0.5; el.max=20; el.step=0.1; }
+  sync();
+}
+function toggleRegen(){ S.isRegen=!S.isRegen; sync(); }
+function toggleMoney(){ S.showMoney=!S.showMoney; sync(); }
+function setUnit(u){ S.unit=u; sync(); }
+
+/* ── Boot ─────────────────────────────────────────────────────── */
+resize(); sync();
+// Wait for web fonts to load so canvas renders Inter/JetBrains Mono cleanly
+document.fonts.ready.then(() => {
+  requestAnimationFrame(ts => { lastTS = ts; requestAnimationFrame(frame); });
+});
+/* ── References modal ─────────────────────────────────────────── */
+function toggleRefs() {
+  const open = document.getElementById('ref-panel').classList.toggle('open');
+  document.getElementById('ref-backdrop').classList.toggle('open', open);
+}
+function closeRefs() {
+  document.getElementById('ref-panel').classList.remove('open');
+  document.getElementById('ref-backdrop').classList.remove('open');
+}
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeRefs(); });
+</script>
+
+<!-- ═══════ REFERENCES MODAL ═══════ -->
+<div id="ref-backdrop" onclick="closeRefs()"></div>
+<div id="ref-panel" role="dialog" aria-modal="true" aria-label="References">
+  <div id="ref-hdr">
+    <div>
+      <div class="ref-eye">Data Sources &amp; Further Reading</div>
+      <h2 class="ref-h2">References</h2>
+    </div>
+    <button class="ref-x" onclick="closeRefs()" aria-label="Close">✕</button>
+  </div>
+  <div id="ref-body">
+
+    <div class="rs">
+      <div class="rs-title">⛽  Fuel Energy Content</div>
+      <div class="ri"><span class="rf">Gasoline ≈ 132,000 kJ/gallon (36.6 kWh/gal)</span><span class="rc">U.S. Energy Information Administration. <em>Energy Conversion Calculators.</em> <a href="https://www.eia.gov/energyexplained/units-and-calculators/energy-conversion-calculators.php" target="_blank">eia.gov ↗</a></span></div>
+      <div class="ri"><span class="rf">Electricity: exactly 3,600 kJ per kWh</span><span class="rc">SI unit definition: 1 Wh ≡ 3,600 J.</span></div>
+    </div>
+
+    <div class="rs">
+      <div class="rs-title">🔥  Gasoline Engine Thermal Efficiency</div>
+      <div class="ri"><span class="rf">Typical gasoline engine: 20–35% thermal efficiency; best modern engines approach 40–45%</span><span class="rc">U.S. DOE, EERE. <em>Where the Energy Goes: Gasoline Vehicles.</em> <a href="https://www.fueleconomy.gov/feg/atv.shtml" target="_blank">fueleconomy.gov ↗</a></span></div>
+      <div class="ri"><span class="rf">~68–72% of fuel energy exits as exhaust heat and engine cooling losses</span><span class="rc">Heywood, J. B. (2018). <em>Internal Combustion Engine Fundamentals</em> (2nd ed.). McGraw-Hill.</span></div>
+    </div>
+
+    <div class="rs">
+      <div class="rs-title">⚡  Electric Motor &amp; EV Efficiency</div>
+      <div class="ri"><span class="rf">EV electric motor efficiency: 85–97%; combined battery-to-wheel efficiency ~77–85%</span><span class="rc">U.S. DOE, EERE. <em>Where the Energy Goes: Electric Vehicles.</em> <a href="https://www.fueleconomy.gov/feg/atv-ev.shtml" target="_blank">fueleconomy.gov ↗</a></span></div>
+      <div class="ri"><span class="rf">EV well-to-wheel efficiency surpasses gasoline even after accounting for grid generation losses</span><span class="rc">Sioshansi, R. &amp; Denholm, P. (2009). <em>Emissions impacts of plug-in hybrid vehicles.</em> Environmental Science &amp; Technology, 43(4), 1199–1204.</span></div>
+    </div>
+
+    <div class="rs">
+      <div class="rs-title">⚙️  Drivetrain &amp; Transmission Losses</div>
+      <div class="ri"><span class="rf">Automatic transmissions: 86–94% efficient; manual: 94–97%; EV single-speed reducer: ~97–99%</span><span class="rc">Murphey, P. C., et al. (2013). <em>Energy Efficiency of Advanced Automatic Transmissions.</em> SAE Int'l. doi:10.4271/2013-01-0993</span></div>
+    </div>
+
+    <div class="rs">
+      <div class="rs-title">🛣️  Aerodynamic Drag &amp; Rolling Resistance</div>
+      <div class="ri"><span class="rf">Aerodynamic drag accounts for ~20% of tractive energy at highway speeds; lower in city driving</span><span class="rc">Davis, S. C., et al. (2022). <em>Transportation Energy Data Book,</em> Ed. 40. Oak Ridge National Laboratory. ORNL/TM-2021/2221.</span></div>
+      <div class="ri"><span class="rf">Rolling resistance coefficient (Crr) for passenger tires: 0.007–0.015; contributes ~5–15% of tractive energy</span><span class="rc">Schuring, D. J. (1980). <em>The Rolling Loss of Pneumatic Tires.</em> Rubber Chemistry &amp; Technology, 53(3), 600–727.</span></div>
+    </div>
+
+    <div class="rs">
+      <div class="rs-title">🛑  Regenerative Braking</div>
+      <div class="ri"><span class="rf">Regen systems recover 60–80% of available braking energy under ideal conditions</span><span class="rc">Gao, Y. &amp; Ehsani, M. (2001). <em>Electronic Braking System of EV and HEV.</em> SAE Technical Paper 2001-01-2478.</span></div>
+      <div class="ri"><span class="rf">Full hybrids (e.g., Toyota Prius) achieve 20–35% better fuel economy largely through regen braking + Atkinson-cycle engine</span><span class="rc">Hermance, D. &amp; Sasaki, S. (1998). <em>Hybrid Electric Vehicles Take to the Streets.</em> IEEE Spectrum, 35(11), 48–52.</span></div>
+    </div>
+
+    <div class="rs">
+      <div class="rs-title">📐  First Law of Thermodynamics</div>
+      <div class="ri"><span class="rf">Energy is conserved — it cannot be created or destroyed, only converted between forms (ΔU = Q − W)</span><span class="rc">Çengel, Y. A. &amp; Boles, M. A. (2018). <em>Thermodynamics: An Engineering Approach</em> (9th ed.), Ch. 2. McGraw-Hill.</span></div>
+      <div class="ri"><span class="rf">The low thermal efficiency of heat engines is a consequence of the Second Law (Carnot limit), not merely poor engineering</span><span class="rc">Moran, M. J., et al. (2018). <em>Fundamentals of Engineering Thermodynamics</em> (9th ed.). Wiley.</span></div>
+    </div>
+
+  </div>
+  <div id="ref-foot">
+    Values in this simulator are representative ranges drawn from the sources above. Individual vehicles vary. Default parameters reflect U.S. EPA combined-cycle averages circa 2020–2024.
+  </div>
+</div>
+</body>
+</html>
