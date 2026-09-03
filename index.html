@@ -38,13 +38,16 @@ html, body {
     fill:none;stroke:currentColor;stroke-width:2.6;
     stroke-linecap:round;stroke-linejoin:round}
 .ic-b{display:block;margin:0 auto 3px;width:19px;height:19px;stroke-width:2.8}
-.ec .ci .ic{width:15px;height:15px;vertical-align:0}
-.rs-title .ic{width:1.05em;height:1.05em;margin-right:.15em}
+.ec .ci .ic{width:21px;height:21px;vertical-align:0;stroke-width:2.4}
+.rs-title .ic{width:1.25em;height:1.25em;margin-right:.2em;vertical-align:-.28em}
 /* the section headers are ~9px type — size their icons in px so the line art
    stays legible instead of collapsing to a smudge */
-.cg-title .ic{width:13px;height:13px;vertical-align:-.25em;stroke-width:3}
-.sb-src-link .ic{width:12px;height:12px;vertical-align:-.18em;stroke-width:3}
-.ref-btn .ic{width:13px;height:13px;vertical-align:-.2em;stroke-width:3}
+.cg-title .ic{width:16px;height:16px;vertical-align:-.32em;stroke-width:3}
+.sb-src-link .ic{width:14px;height:14px;vertical-align:-.22em;stroke-width:3}
+.ref-btn .ic{width:15px;height:15px;vertical-align:-.24em;stroke-width:3}
+/* the gear and tire carry the most detail — give them a touch more room */
+.ec .ci .ic.big,.cg-title .ic.big{width:23px;height:23px}
+.cg-title .ic.big{width:17px;height:17px}
 
 /* ── App shell ─────────────────────────────────────────────────── */
 #app { display: flex; height: 100vh; }
@@ -310,7 +313,7 @@ input[type=range].s-elec::-webkit-slider-thumb   { background:var(--elec);  box-
 
   <!-- Vehicle type -->
   <div class="cg">
-    <div class="cg-title"><svg class="ic"><use href="#ic-car"/></svg> Vehicle Type</div>
+    <div class="cg-title"><svg class="ic big"><use href="#ic-car"/></svg> Vehicle Type</div>
     <div class="prow">
       <button class="pbt active" id="pbt-gas"    onclick="setPreset('gas')"><svg class="ic ic-b"><use href="#ic-fuel"/></svg>Gasoline</button>
       <button class="pbt"        id="pbt-hybrid" onclick="setPreset('hybrid')"><svg class="ic ic-b"><use href="#ic-battery"/></svg>Hybrid</button>
@@ -343,7 +346,7 @@ input[type=range].s-elec::-webkit-slider-thumb   { background:var(--elec);  box-
 
   <!-- Drivetrain -->
   <div class="cg">
-    <div class="cg-title"><svg class="ic"><use href="#ic-gear"/></svg> Drivetrain</div>
+    <div class="cg-title"><svg class="ic big"><use href="#ic-gear"/></svg> Drivetrain</div>
     <div class="cr">
       <div class="cl"><span class="cn">Drivetrain Efficiency</span><span class="cv" id="v-dt" style="color:var(--mech)">94%</span></div>
       <input type="range" class="s-mech" id="r-dt" min="70" max="99" step="0.5" value="94">
@@ -353,7 +356,7 @@ input[type=range].s-elec::-webkit-slider-thumb   { background:var(--elec);  box-
 
   <!-- Road forces -->
   <div class="cg">
-    <div class="cg-title"><svg class="ic"><use href="#ic-road"/></svg> Road Forces (% of wheel power)</div>
+    <div class="cg-title"><svg class="ic big"><use href="#ic-road"/></svg> Road Forces (% of wheel power)</div>
     <div class="cr">
       <div class="cl"><span class="cn">Aerodynamic Drag</span><span class="cv" id="v-aero" style="color:var(--orange)">10%</span></div>
       <input type="range" id="r-aero" min="2" max="40" step="1" value="10">
@@ -386,7 +389,7 @@ input[type=range].s-elec::-webkit-slider-thumb   { background:var(--elec);  box-
 
   <!-- Display -->
   <div class="cg">
-    <div class="cg-title"><svg class="ic"><use href="#ic-chart"/></svg> Display</div>
+    <div class="cg-title"><svg class="ic big"><use href="#ic-chart"/></svg> Display</div>
     <div class="tr2">
       <span class="tl">Show Dollar Costs</span>
       <div class="tog on" id="money-tog" onclick="toggleMoney()"></div>
@@ -417,7 +420,7 @@ input[type=range].s-elec::-webkit-slider-thumb   { background:var(--elec);  box-
 <script>
 'use strict';
 
-function ico(n){return '<svg class="ic"><use href="#ic-'+n+'"/></svg>';}
+function ico(n){var big=/^(gear|tire|car|road|chart)$/.test(n)?' big':'';return '<svg class="ic'+big+'"><use href="#ic-'+n+'"/></svg>';}
 
 /* ── Constants ─────────────────────────────────────────────────── */
 const KJ_GAL = 132000;
@@ -1010,12 +1013,12 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeRefs();
     </div>
 
     <div class="rs">
-      <div class="rs-title"><svg class="ic"><use href="#ic-gear"/></svg>  Drivetrain &amp; Transmission Losses</div>
+      <div class="rs-title"><svg class="ic big"><use href="#ic-gear"/></svg>  Drivetrain &amp; Transmission Losses</div>
       <div class="ri"><span class="rf">Automatic transmissions: 86–94% efficient; manual: 94–97%; EV single-speed reducer: ~97–99%</span><span class="rc">Murphey, P. C., et al. (2013). <em>Energy Efficiency of Advanced Automatic Transmissions.</em> SAE Int'l. doi:10.4271/2013-01-0993</span></div>
     </div>
 
     <div class="rs">
-      <div class="rs-title"><svg class="ic"><use href="#ic-road"/></svg>  Aerodynamic Drag &amp; Rolling Resistance</div>
+      <div class="rs-title"><svg class="ic big"><use href="#ic-road"/></svg>  Aerodynamic Drag &amp; Rolling Resistance</div>
       <div class="ri"><span class="rf">Aerodynamic drag accounts for ~20% of tractive energy at highway speeds; lower in city driving</span><span class="rc">Davis, S. C., et al. (2022). <em>Transportation Energy Data Book,</em> Ed. 40. Oak Ridge National Laboratory. ORNL/TM-2021/2221.</span></div>
       <div class="ri"><span class="rf">Rolling resistance coefficient (Crr) for passenger tires: 0.007–0.015; contributes ~5–15% of tractive energy</span><span class="rc">Schuring, D. J. (1980). <em>The Rolling Loss of Pneumatic Tires.</em> Rubber Chemistry &amp; Technology, 53(3), 600–727.</span></div>
     </div>
