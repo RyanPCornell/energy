@@ -922,11 +922,20 @@ wr('r-brake','brakeFrac'); wr('r-regen','regenEff');
 
 function setPreset(p) {
   S.preset=p; Object.assign(S,PRESETS[p]);
+  /* Range limits depend on the fuel: gallons vs kWh, $/gallon vs $/kWh.
+     These must be set BEFORE the values are written — a browser clamps an
+     out-of-range value to the OLD range (which silently pinned the EV's
+     $0.15/kWh to the gasoline slider's $1.00 floor). */
+  const isEV = S.fuelType==='electric';
+  const fuelEl  = document.getElementById('r-fuel');
+  const priceEl = document.getElementById('r-price');
+  if(isEV){ fuelEl.min=1;    fuelEl.max=100;  fuelEl.step=0.5;
+            priceEl.min=0.05; priceEl.max=1.00; priceEl.step=0.01; }
+  else    { fuelEl.min=0.5;  fuelEl.max=20;   fuelEl.step=0.1;
+            priceEl.min=1.0;  priceEl.max=8.0;  priceEl.step=0.05; }
   const ids=['fuel','price','eng','dt','aero','roll','brake','regen'];
   const ks=['fuelAmt','fuelPrice','engEff','dtEff','aeroFrac','rollFrac','brakeFrac','regenEff'];
   ids.forEach((id,i)=>{ const el=document.getElementById('r-'+id); if(el) el.value=S[ks[i]]; });
-  if(p==='ev'){ const el=document.getElementById('r-fuel'); el.min=1; el.max=80; el.step=0.5; }
-  else        { const el=document.getElementById('r-fuel'); el.min=0.5; el.max=20; el.step=0.1; }
   sync();
 }
 function toggleRegen(){ S.isRegen=!S.isRegen; sync(); }
