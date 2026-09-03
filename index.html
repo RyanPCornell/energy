@@ -10,18 +10,18 @@
 <style>
 /* ── Variables ─────────────────────────────────────────────────── */
 :root {
-  --bg:      #0D1117;
-  --surface: #161B27;
-  --panel:   #1E2438;
-  --border:  #2D3554;
-  --text:    #E2E8F0;
-  --muted:   #64748B;
-  --amber:   #F59E0B;
-  --heat:    #EF4444;
-  --mech:    #3B82F6;
-  --elec:    #06B6D4;
-  --useful:  #10B981;
-  --orange:  #F97316;
+  --bg:      #FFFFFF;
+  --surface: #F0F7F4;
+  --panel:   #FFFFFF;
+  --border:  #DDE7E2;
+  --text:    #15201B;
+  --muted:   #5B6B63;
+  --amber:   #B5651D;
+  --heat:    #A4373A;
+  --mech:    #1C7293;
+  --elec:    #3D6E70;
+  --useful:  #2D6A4F;
+  --orange:  #BC8A2E;
   --sb:      268px;
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -42,7 +42,7 @@ html, body {
 }
 .sb-head {
   padding: 14px 15px 12px;
-  background: linear-gradient(175deg, #1a2240 0%, var(--surface) 100%);
+  background: linear-gradient(175deg, #E8F1EC 0%, var(--surface) 100%);
   border-bottom: 1px solid var(--border);
 }
 .sb-head .eye { font-size:.57rem; letter-spacing:.13em; text-transform:uppercase; color:var(--muted); margin-bottom:4px; }
@@ -53,7 +53,7 @@ html, body {
   padding-top:8px;
   border-top:1px solid var(--border);
   font-size:.63rem !important;
-  color:#4B5568 !important;
+  color:#7A8A82 !important;
   font-style:italic;
 }
 .sb-src-link {
@@ -75,7 +75,7 @@ html, body {
   cursor:pointer; text-align:center; line-height:1.3; transition:all .14s;
 }
 .pbt:hover { border-color:var(--amber); color:var(--text); }
-.pbt.active { background:rgba(245,158,11,.13); border-color:var(--amber); color:var(--amber); }
+.pbt.active { background:rgba(181,101,29,.13); border-color:var(--amber); color:var(--amber); }
 
 /* slider rows */
 .cr { margin-bottom:9px; }
@@ -90,12 +90,12 @@ input[type=range] {
 }
 input[type=range]::-webkit-slider-thumb {
   -webkit-appearance:none; width:12px; height:12px; border-radius:50%;
-  background:var(--amber); cursor:pointer; box-shadow:0 0 4px rgba(245,158,11,.5);
+  background:var(--amber); cursor:pointer; box-shadow:0 0 4px rgba(181,101,29,.5);
 }
-input[type=range].s-heat::-webkit-slider-thumb   { background:var(--heat);  box-shadow:0 0 4px rgba(239,68,68,.5); }
-input[type=range].s-mech::-webkit-slider-thumb   { background:var(--mech);  box-shadow:0 0 4px rgba(59,130,246,.5); }
-input[type=range].s-useful::-webkit-slider-thumb { background:var(--useful);box-shadow:0 0 4px rgba(16,185,129,.5); }
-input[type=range].s-elec::-webkit-slider-thumb   { background:var(--elec);  box-shadow:0 0 4px rgba(6,182,212,.5); }
+input[type=range].s-heat::-webkit-slider-thumb   { background:var(--heat);  box-shadow:0 0 4px rgba(164,55,58,.5); }
+input[type=range].s-mech::-webkit-slider-thumb   { background:var(--mech);  box-shadow:0 0 4px rgba(28,114,147,.5); }
+input[type=range].s-useful::-webkit-slider-thumb { background:var(--useful);box-shadow:0 0 4px rgba(45,106,79,.5); }
+input[type=range].s-elec::-webkit-slider-thumb   { background:var(--elec);  box-shadow:0 0 4px rgba(61,110,112,.5); }
 
 .hint { font-size:.63rem; color:var(--muted); line-height:1.4; margin-top:4px; }
 
@@ -110,6 +110,7 @@ input[type=range].s-elec::-webkit-slider-thumb   { background:var(--elec);  box-
 .tog::after {
   content:''; position:absolute; top:2.5px; left:2.5px;
   width:14px; height:14px; border-radius:50%; background:#fff; transition:transform .18s;
+  box-shadow:0 1px 2px rgba(20,40,30,.28);
 }
 .tog.on::after { transform:translateX(17px); }
 
@@ -120,7 +121,7 @@ input[type=range].s-elec::-webkit-slider-thumb   { background:var(--elec);  box-
   border-radius:4px; color:var(--muted); font-size:.64rem; font-weight:600;
   cursor:pointer; text-align:center; transition:all .14s;
 }
-.ubt.active { background:rgba(59,130,246,.13); border-color:var(--mech); color:var(--mech); }
+.ubt.active { background:rgba(28,114,147,.13); border-color:var(--mech); color:var(--mech); }
 
 /* ── Main area ─────────────────────────────────────────────────── */
 #main { flex:1; display:flex; flex-direction:column; overflow:hidden; min-width:0; }
@@ -135,7 +136,7 @@ input[type=range].s-elec::-webkit-slider-thumb   { background:var(--elec);  box-
 .tb-sp    { flex:1; min-width:4px; }
 .eff-pill {
   font-size:.67rem; border-radius:4px; padding:3px 9px; white-space:nowrap;
-  background:rgba(16,185,129,.12); border:1px solid rgba(16,185,129,.4);
+  background:rgba(45,106,79,.12); border:1px solid rgba(45,106,79,.4);
   color:var(--useful); font-family:monospace; font-weight:700;
 }
 .law-pill {
@@ -182,11 +183,11 @@ input[type=range].s-elec::-webkit-slider-thumb   { background:var(--elec);  box-
   cursor:pointer; transition:all .15s; white-space:nowrap;
   letter-spacing:.02em;
 }
-.ref-btn:hover { border-color:var(--amber); color:var(--amber); background:rgba(245,158,11,.08); }
+.ref-btn:hover { border-color:var(--amber); color:var(--amber); background:rgba(181,101,29,.08); }
 
 /* ── References backdrop ──────────────────────────────────────── */
 #ref-backdrop {
-  position:fixed; inset:0; background:rgba(5,8,18,.65);
+  position:fixed; inset:0; background:rgba(20,40,30,.45);
   backdrop-filter:blur(3px); z-index:100;
   opacity:0; pointer-events:none; transition:opacity .22s ease;
 }
@@ -196,7 +197,7 @@ input[type=range].s-elec::-webkit-slider-thumb   { background:var(--elec);  box-
 #ref-panel {
   position:fixed; top:0; right:0; bottom:0;
   width:min(600px, 92vw);
-  background: linear-gradient(175deg, #1a2240 0%, #141926 100%);
+  background: linear-gradient(175deg, #E8F1EC 0%, #F0F7F4 100%);
   border-left:1px solid var(--border);
   display:flex; flex-direction:column;
   z-index:101;
@@ -250,10 +251,10 @@ input[type=range].s-elec::-webkit-slider-thumb   { background:var(--elec);  box-
 .ri {
   display:flex; flex-direction:column; gap:3px;
   padding:9px 10px; border-radius:6px; margin-bottom:6px;
-  background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.05);
+  background:rgba(20,40,30,.04); border:1px solid rgba(20,40,30,.09);
   transition:background .12s;
 }
-.ri:hover { background:rgba(255,255,255,.055); }
+.ri:hover { background:rgba(20,40,30,.07); }
 .rf {
   font-size:.78rem; color:var(--text); line-height:1.45;
   font-family:'Outfit',sans-serif; font-weight:500;
@@ -538,7 +539,7 @@ function spawnParts(dt, en, sxs, cy2, mH, fracs) {
       const py=cy2-fh/2-3;
       const lw=lf[i]*mH;
       const px=nx+(Math.random()-.5)*lw*0.5;
-      const col=i===0||i===3?'#F87171':'#FB923C';
+      const col=i===0||i===3?'#8A2F32':'#C9722B';
       parts.push(new P(px,py, (Math.random()-.5)*15, -(25+Math.random()*45),
         col, 1.6+Math.random()*1.2, 0.9+Math.random()*0.7));
     }
@@ -551,7 +552,7 @@ function spawnParts(dt, en, sxs, cy2, mH, fracs) {
       spT.regen=0.12/(en.regen/en.fuelKJ*4+0.3);
       const nx=sxs[4]; const fh=fracs[4]*mH;
       parts.push(new P(nx,cy2+fh/2+4, (Math.random()-.5)*12, 15+Math.random()*20,
-        '#67E8F9',2+Math.random(),0.8+Math.random()*0.4));
+        '#5BA3C4',2+Math.random(),0.8+Math.random()*0.4));
     }
   }
 
@@ -657,19 +658,19 @@ function frame(ts){
 
   /* ── Flow bands ── */
   const FC = [
-    ['rgba(245,158,11,.85)','rgba(249,115,22,.78)'],
-    ['rgba(249,115,22,.78)','rgba(59,130,246,.78)'],
-    ['rgba(59,130,246,.78)','rgba(59,130,246,.74)'],
-    ['rgba(59,130,246,.74)','rgba(16,185,129,.76)'],
+    ['rgba(181,101,29,.85)','rgba(188,138,46,.78)'],
+    ['rgba(188,138,46,.78)','rgba(28,114,147,.78)'],
+    ['rgba(28,114,147,.78)','rgba(28,114,147,.74)'],
+    ['rgba(28,114,147,.74)','rgba(45,106,79,.76)'],
   ];
   for(let i=0;i<4;i++) band(sxs[i]+7,sxs[i+1]-7,flowCY,hs[i],hs[i+1],FC[i][0],FC[i][1]);
 
   /* ── Loss streams ── */
   const losses=[
-    { e:en.engHeat,       col:'#EF4444', label:'Engine Heat Loss' },
-    { e:en.dtLoss,        col:'#F97316', label:'Drivetrain Friction' },
-    { e:en.aero+en.roll,  col:'#FB923C', label:'Aero + Rolling' },
-    { e:en.brkHeat,       col:'#EF4444', label:S.isRegen?'Braking Heat':'Braking → Heat' },
+    { e:en.engHeat,       col:'#A4373A', label:'Engine Heat Loss' },
+    { e:en.dtLoss,        col:'#BC8A2E', label:'Drivetrain Friction' },
+    { e:en.aero+en.roll,  col:'#C9722B', label:'Aero + Rolling' },
+    { e:en.brkHeat,       col:'#A4373A', label:S.isRegen?'Braking Heat':'Braking → Heat' },
   ];
 
   /* Loss stream heights scale relative to each other for visual clarity */
@@ -700,10 +701,10 @@ function frame(ts){
     cx.font=`600 ${wide?14:11}px Outfit,sans-serif`;
     cx.fillStyle=ls.col;
     cx.fillText(ls.label, lx, baseLabelY);
-    cx.font=`500 ${wide?12:10}px 'JetBrains Mono',monospace`; cx.fillStyle='#CBD5E1';
+    cx.font=`500 ${wide?12:10}px 'JetBrains Mono',monospace`; cx.fillStyle='#15201B';
     cx.fillText(pct+'  '+disp, lx, baseLabelY+13);
     if(S.showMoney&&dol){
-      cx.fillStyle='#10B981'; cx.globalAlpha=0.85;
+      cx.fillStyle='#2D6A4F'; cx.globalAlpha=0.85;
       cx.fillText(dol, lx, baseLabelY+24);
     }
     cx.restore();
@@ -719,18 +720,18 @@ function frame(ts){
   if(S.isRegen && en.regen>0.5){
     const rw=Math.max(2,(en.regen/en.fuelKJ)*maxH);
     const botY=flowCY+hs[4]/2;
-    regenStream(sxs[4], botY, rw, '#06B6D4');
+    regenStream(sxs[4], botY, rw, '#3D6E70');
     const disp=fmtE(en.regen,en.fuelKJ);
     const dol=S.showMoney?fmtD(en.regen,en.cpkj):'';
     cx.save(); cx.textAlign='center'; cx.textBaseline='top';
-    cx.font=`600 ${wide?14:11}px Outfit,sans-serif`; cx.fillStyle='#06B6D4';
+    cx.font=`600 ${wide?14:11}px Outfit,sans-serif`; cx.fillStyle='#3D6E70';
     cx.fillText('⟳  Recovered: '+disp+(S.showMoney&&dol?' · '+dol:''), sxs[4], botY+54);
     cx.restore();
   }
 
   /* ── Stage nodes & staggered labels ── */
   const nLabels = ['Fuel In','Engine Out','Wheel Power','Propulsion','Net Output'];
-  const nCols   = ['#F59E0B','#EF4444','#3B82F6','#3B82F6','#10B981'];
+  const nCols   = ['#B5651D','#A4373A','#1C7293','#1C7293','#2D6A4F'];
   const nVals   = [en.fuelKJ,en.engOut,en.wpwr,en.prop,en.netKE+en.regen];
   /* Alternate label depths: even indices shallow, odd deep — prevents adjacent overlap */
   const labelDepths = [0, 22, 0, 22, 0];
@@ -763,7 +764,7 @@ function frame(ts){
     cx.save(); cx.textAlign='center'; cx.textBaseline='top';
     cx.font=`600 ${wide?14:11}px Outfit,sans-serif`; cx.fillStyle=nCols[i];
     cx.fillText(nLabels[i], sx, baseY);
-    cx.font=`500 ${wide?12:10}px 'JetBrains Mono',monospace`; cx.fillStyle='#94A3B8';
+    cx.font=`500 ${wide?12:10}px 'JetBrains Mono',monospace`; cx.fillStyle='#5B6B63';
     cx.fillText(disp+'  '+pct, sx, baseY+13);
     if(S.showMoney&&dol){ cx.fillStyle=nCols[i]; cx.globalAlpha=.7; cx.fillText(dol, sx, baseY+24); }
     cx.restore();
@@ -787,14 +788,14 @@ function frame(ts){
     cx.save();
     cx.globalAlpha = 0.88;
     rrect(rx - boxW, ry, boxW, boxH, 6);
-    cx.fillStyle = 'rgba(30,10,10,0.75)'; cx.fill();
-    cx.strokeStyle = '#7F1D1D'; cx.lineWidth = 1; cx.stroke();
+    cx.fillStyle = 'rgba(164,55,58,0.10)'; cx.fill();
+    cx.strokeStyle = '#A4373A'; cx.lineWidth = 1; cx.stroke();
     cx.restore();
     cx.save();
     cx.textAlign = 'right'; cx.textBaseline = 'top';
-    cx.font = '600 14px Outfit,sans-serif'; cx.fillStyle = '#F87171';
+    cx.font = '600 14px Outfit,sans-serif'; cx.fillStyle = '#8A2F32';
     cx.fillText(line1, rx - padX, ry + padY);
-    cx.font = '400 11px Outfit,sans-serif'; cx.fillStyle = '#94A3B8';
+    cx.font = '400 11px Outfit,sans-serif'; cx.fillStyle = '#5B6B63';
     cx.fillText(line2, rx - padX, ry + padY + 14 + lineGap);
     cx.restore();
   }
@@ -811,14 +812,14 @@ function frame(ts){
     const midX = (sxs[i]+sxs[i+1])/2;
     const avgH = (hs[i]+hs[i+1])/2;
     cx.save(); cx.textAlign='center'; cx.textBaseline='top';
-    cx.font=`500 ${wide?11:9}px 'JetBrains Mono',monospace`; cx.fillStyle='#475569';
+    cx.font=`500 ${wide?11:9}px 'JetBrains Mono',monospace`; cx.fillStyle='#5B6B63';
     cx.fillText((iEffs[i]*100).toFixed(0)+'% →', midX, flowCY+avgH/2+34);
     cx.restore();
   }
 
   /* ── Conservation note (very dim) ── */
   cx.save(); cx.textAlign='right'; cx.textBaseline='top';
-  cx.font='400 italic 11px Outfit,sans-serif'; cx.fillStyle='#2D3748';
+  cx.font='400 italic 11px Outfit,sans-serif'; cx.fillStyle='#7A8A82';
   cx.fillText('Σ = '+(en.sum/en.fuelKJ*100).toFixed(1)+'%  ✓', W-PR, PT+4);
   cx.restore();
 
@@ -840,14 +841,14 @@ function buildCards() {
     : null;
 
   const defs=[
-    { col:'#F59E0B', icon:'⛽', lbl:'Total Input',             e:en.fuelKJ,           sub: S.fuelType==='gasoline'?S.fuelAmt.toFixed(1)+' gal':S.fuelAmt.toFixed(1)+' kWh' },
-    { col:'#EF4444', icon:'🌡️', lbl:'Engine Heat Loss',        e:en.engHeat,          sub: S.fuelType==='gasoline'?'Exhaust + cooling':'Motor heat' },
-    { col:'#F97316', icon:'⚙️', lbl:'Drivetrain Friction',     e:en.dtLoss,           sub: 'Gears, differential' },
-    { col:'#FB923C', icon:'💨', lbl:'Aerodynamic Drag',        e:en.aero,             sub: 'Air resistance' },
-    { col:'#F97316', icon:'🛞', lbl:'Rolling Resistance',      e:en.roll,             sub: 'Tire deformation' },
-    { col:'#EF4444', icon:'🛑', lbl:S.isRegen?'Braking Heat':'Braking → Heat', e:en.brkHeat, sub: S.isRegen?'Unconverted fraction':'All KE → heat' },
-    ...(S.isRegen&&en.regen>0.5?[{ col:'#06B6D4',icon:'⟳', lbl:'Regen Recovered', e:en.regen, sub:'Back to battery ✓' }]:[]),
-    { col:'#10B981', icon:'✅', lbl:'Net Useful Work',         e:en.netKE+en.regen,   sub:'Overcomes aero+rolling' },
+    { col:'#B5651D', icon:'⛽', lbl:'Total Input',             e:en.fuelKJ,           sub: S.fuelType==='gasoline'?S.fuelAmt.toFixed(1)+' gal':S.fuelAmt.toFixed(1)+' kWh' },
+    { col:'#A4373A', icon:'🌡️', lbl:'Engine Heat Loss',        e:en.engHeat,          sub: S.fuelType==='gasoline'?'Exhaust + cooling':'Motor heat' },
+    { col:'#BC8A2E', icon:'⚙️', lbl:'Drivetrain Friction',     e:en.dtLoss,           sub: 'Gears, differential' },
+    { col:'#C9722B', icon:'💨', lbl:'Aerodynamic Drag',        e:en.aero,             sub: 'Air resistance' },
+    { col:'#BC8A2E', icon:'🛞', lbl:'Rolling Resistance',      e:en.roll,             sub: 'Tire deformation' },
+    { col:'#A4373A', icon:'🛑', lbl:S.isRegen?'Braking Heat':'Braking → Heat', e:en.brkHeat, sub: S.isRegen?'Unconverted fraction':'All KE → heat' },
+    ...(S.isRegen&&en.regen>0.5?[{ col:'#3D6E70',icon:'⟳', lbl:'Regen Recovered', e:en.regen, sub:'Back to battery ✓' }]:[]),
+    { col:'#2D6A4F', icon:'✅', lbl:'Net Useful Work',         e:en.netKE+en.regen,   sub:'Overcomes aero+rolling' },
   ];
 
   const totalWasted = en.engHeat + en.dtLoss + en.brkHeat;
@@ -863,17 +864,17 @@ function buildCards() {
         <div class="cv2">${disp}</div>
         ${dol?`<div class="cs" style="color:${d.col}">${dol}</div>`:''}
         <div class="cp">${pct} of input</div>
-        <div style="font-size:.55rem;color:#475569;margin-top:1px">${d.sub||''}</div>
+        <div style="font-size:.55rem;color:#5B6B63;margin-top:1px">${d.sub||''}</div>
       </div>`;
     }).join('')}
     ${S.showMoney ? `
-    <div class="ec" style="color:#F87171;border-top-color:#7F1D1D;min-width:130px;background:rgba(127,29,29,.15)">
+    <div class="ec" style="color:#8A2F32;border-top-color:#A4373A;min-width:130px;background:rgba(164,55,58,.15)">
       <div class="ci">🔥</div>
       <div class="cl2">Total Heat Wasted</div>
       <div class="cv2">${fmtE(totalWasted,en.fuelKJ)}</div>
-      <div class="cs" style="color:#F87171">${fmtD(totalWasted,c)} thrown away</div>
+      <div class="cs" style="color:#8A2F32">${fmtD(totalWasted,c)} thrown away</div>
       <div class="cp">${(totalWasted/en.fuelKJ*100).toFixed(1)}% of ${fmtD(en.fuelKJ,c)} spent</div>
-      <div style="font-size:.55rem;color:#475569;margin-top:1px">E cannot be destroyed</div>
+      <div style="font-size:.55rem;color:#5B6B63;margin-top:1px">E cannot be destroyed</div>
     </div>` : ''}
   `;
 }
@@ -883,7 +884,7 @@ function updatePill() {
   const en=E();
   const pill=document.getElementById('eff-pill');
   pill.textContent='Overall Efficiency: '+en.eff.toFixed(1)+'%';
-  const c=en.eff>40?'#10B981':en.eff>20?'#F59E0B':'#EF4444';
+  const c=en.eff>40?'#2D6A4F':en.eff>20?'#B5651D':'#A4373A';
   pill.style.color=c; pill.style.borderColor=c+'55'; pill.style.background=c+'18';
 }
 
