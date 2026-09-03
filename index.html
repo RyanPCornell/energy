@@ -31,6 +31,21 @@ html, body {
   overflow: hidden;
 }
 
+
+/* ── hand-drawn icon set (replaces emoji) ─────────────────────────── */
+.ic-sprite{position:absolute;width:0;height:0;overflow:hidden}
+.ic{width:1.15em;height:1.15em;vertical-align:-.22em;flex:none;
+    fill:none;stroke:currentColor;stroke-width:2.6;
+    stroke-linecap:round;stroke-linejoin:round}
+.ic-b{display:block;margin:0 auto 3px;width:19px;height:19px;stroke-width:2.8}
+.ec .ci .ic{width:15px;height:15px;vertical-align:0}
+.rs-title .ic{width:1.05em;height:1.05em;margin-right:.15em}
+/* the section headers are ~9px type — size their icons in px so the line art
+   stays legible instead of collapsing to a smudge */
+.cg-title .ic{width:13px;height:13px;vertical-align:-.25em;stroke-width:3}
+.sb-src-link .ic{width:12px;height:12px;vertical-align:-.18em;stroke-width:3}
+.ref-btn .ic{width:13px;height:13px;vertical-align:-.2em;stroke-width:3}
+
 /* ── App shell ─────────────────────────────────────────────────── */
 #app { display: flex; height: 100vh; }
 
@@ -280,6 +295,8 @@ input[type=range].s-elec::-webkit-slider-thumb   { background:var(--elec);  box-
 </style>
 </head>
 <body>
+<svg class="ic-sprite" aria-hidden="true" focusable="false"><defs><symbol id="ic-car" viewBox="0 0 64 64"><path d="M11 41V33l5-11a4 4 0 0 1 3.6-2.3h24.8A4 4 0 0 1 48 22l5 11v8"/><path d="M11 33h42"/><path d="M24 20.7V33M40 20.7V33"/><circle cx="20" cy="43" r="4.5"/><circle cx="44" cy="43" r="4.5"/></symbol><symbol id="ic-fuel" viewBox="0 0 64 64"><path d="M15 52V16a3 3 0 0 1 3-3h13a3 3 0 0 1 3 3v36"/><path d="M12 52h26"/><path d="M20 20h9v8h-9z"/><path d="M34 25h6a3 3 0 0 1 3 3v15a3 3 0 0 0 6 0V29l-5-6"/></symbol><symbol id="ic-bolt" viewBox="0 0 64 64"><path d="M35 8 19 35h11l-4 21 20-30H30z"/></symbol><symbol id="ic-flame" viewBox="0 0 64 64"><path d="M32 8c10 12 14 20 14 28a14 14 0 0 1-28 0c0-6 3-11 7-15 1 4 3 6 5 7 2-6 2-13 2-20Z"/><path d="M32 34c4 5 5 8 5 11a5 5 0 0 1-10 0c0-3 2-6 5-11Z"/></symbol><symbol id="ic-thermo" viewBox="0 0 64 64"><circle cx="32" cy="47" r="7"/><path d="M28 44V17a4 4 0 0 1 8 0v27"/><path d="M32 45V30"/><path d="M38 22h5M38 28h5M38 34h5"/></symbol><symbol id="ic-gear" viewBox="0 0 64 64"><circle cx="32" cy="32" r="10"/><circle cx="32" cy="32" r="4"/><path d="M42 32h4M39.1 39.1l2.8 2.8M32 42v4M24.9 39.1l-2.8 2.8M22 32h-4M24.9 24.9l-2.8-2.8M32 22v-4M39.1 24.9l2.8-2.8"/></symbol><symbol id="ic-road" viewBox="0 0 64 64"><path d="M22 54 28 12M42 54 36 12"/><path d="M32 16v6M32 28v6M32 40v6"/></symbol><symbol id="ic-wind" viewBox="0 0 64 64"><path d="M10 24h24a6 6 0 1 0-6-6"/><path d="M10 34h32a6 6 0 1 1-6 6"/><path d="M10 44h16"/></symbol><symbol id="ic-tire" viewBox="0 0 64 64"><circle cx="32" cy="32" r="20"/><circle cx="32" cy="32" r="8"/><path d="M32 12v8M32 44v8M12 32h8M44 32h8"/><path d="m18 18 6 6M46 18l-6 6M18 46l6-6M46 46l-6-6"/></symbol><symbol id="ic-brake" viewBox="0 0 64 64"><path d="M24 12h16l12 12v16L40 52H24L12 40V24z"/><path d="M24 32h16"/></symbol><symbol id="ic-battery" viewBox="0 0 64 64"><rect x="10" y="22" width="38" height="20" rx="4"/><path d="M52 28v8"/><path d="M17 28v8M25 28v8M33 28v8"/></symbol><symbol id="ic-chart" viewBox="0 0 64 64"><path d="M12 50h40"/><path d="M20 50V34M30 50V22M40 50V28M50 50V16"/></symbol><symbol id="ic-books" viewBox="0 0 64 64"><path d="M12 46V18a3 3 0 0 1 3-3h9a4 4 0 0 1 4 4v27a3 3 0 0 0-3-3H15a3 3 0 0 0-3 3Z"/><path d="M52 46V18a3 3 0 0 0-3-3h-9a4 4 0 0 0-4 4v27a3 3 0 0 1 3-3h10a3 3 0 0 1 3 3Z"/></symbol><symbol id="ic-regen" viewBox="0 0 64 64"><path d="M48 32a16 16 0 1 1-4.7-11.3"/><path d="M44 11v10H34"/></symbol><symbol id="ic-check" viewBox="0 0 64 64"><circle cx="32" cy="32" r="20"/><path d="m22 33 7 7 14-16"/></symbol><symbol id="ic-ruler" viewBox="0 0 64 64"><path d="M14 50h36L14 14z"/><path d="M14 38h7M14 30h7M22 43v7M30 43v7"/></symbol></defs></svg>
+
 <div id="app">
 
 <!-- ═══════════════ SIDEBAR ═══════════════ -->
@@ -288,22 +305,22 @@ input[type=range].s-elec::-webkit-slider-thumb   { background:var(--elec);  box-
     <div class="eye">Physics Simulator</div>
     <h1>Vehicle Energy Flow</h1>
     <p>Every joule is accounted for. Trace where fuel energy goes and how much you pay at each stage.</p>
-    <p class="sb-disclaimer">Values are drawn from the sources listed in <span class="sb-src-link" onclick="toggleRefs()">📚 Sources</span> and are representative ranges. This tool provides a general overview for <em>educational purposes only</em>.</p>
+    <p class="sb-disclaimer">Values are drawn from the sources listed in <span class="sb-src-link" onclick="toggleRefs()"><svg class="ic"><use href="#ic-books"/></svg> Sources</span> and are representative ranges. This tool provides a general overview for <em>educational purposes only</em>.</p>
   </div>
 
   <!-- Vehicle type -->
   <div class="cg">
-    <div class="cg-title">🚗 Vehicle Type</div>
+    <div class="cg-title"><svg class="ic"><use href="#ic-car"/></svg> Vehicle Type</div>
     <div class="prow">
-      <button class="pbt active" id="pbt-gas"    onclick="setPreset('gas')">⛽<br>Gasoline</button>
-      <button class="pbt"        id="pbt-hybrid" onclick="setPreset('hybrid')">🔋<br>Hybrid</button>
-      <button class="pbt"        id="pbt-ev"     onclick="setPreset('ev')">⚡<br>Electric</button>
+      <button class="pbt active" id="pbt-gas"    onclick="setPreset('gas')"><svg class="ic ic-b"><use href="#ic-fuel"/></svg>Gasoline</button>
+      <button class="pbt"        id="pbt-hybrid" onclick="setPreset('hybrid')"><svg class="ic ic-b"><use href="#ic-battery"/></svg>Hybrid</button>
+      <button class="pbt"        id="pbt-ev"     onclick="setPreset('ev')"><svg class="ic ic-b"><use href="#ic-bolt"/></svg>Electric</button>
     </div>
   </div>
 
   <!-- Fuel -->
   <div class="cg">
-    <div class="cg-title" id="fuel-cg">⛽ Fuel Input</div>
+    <div class="cg-title" id="fuel-cg"><svg class="ic"><use href="#ic-fuel"/></svg> Fuel Input</div>
     <div class="cr">
       <div class="cl"><span class="cn" id="fuel-lbl">Gasoline (gallons)</span><span class="cv" id="v-fuel" style="color:var(--amber)">1.0 gal</span></div>
       <input type="range" id="r-fuel" min="0.5" max="20" step="0.1" value="1">
@@ -316,7 +333,7 @@ input[type=range].s-elec::-webkit-slider-thumb   { background:var(--elec);  box-
 
   <!-- Engine -->
   <div class="cg">
-    <div class="cg-title" id="eng-cg">🔥 Engine Efficiency</div>
+    <div class="cg-title" id="eng-cg"><svg class="ic"><use href="#ic-flame"/></svg> Engine Efficiency</div>
     <div class="cr">
       <div class="cl"><span class="cn" id="eng-lbl">Thermal Efficiency</span><span class="cv" id="v-eng" style="color:var(--heat)">25%</span></div>
       <input type="range" class="s-heat" id="r-eng" min="8" max="48" step="0.5" value="25">
@@ -326,7 +343,7 @@ input[type=range].s-elec::-webkit-slider-thumb   { background:var(--elec);  box-
 
   <!-- Drivetrain -->
   <div class="cg">
-    <div class="cg-title">⚙️ Drivetrain</div>
+    <div class="cg-title"><svg class="ic"><use href="#ic-gear"/></svg> Drivetrain</div>
     <div class="cr">
       <div class="cl"><span class="cn">Drivetrain Efficiency</span><span class="cv" id="v-dt" style="color:var(--mech)">94%</span></div>
       <input type="range" class="s-mech" id="r-dt" min="70" max="99" step="0.5" value="94">
@@ -336,7 +353,7 @@ input[type=range].s-elec::-webkit-slider-thumb   { background:var(--elec);  box-
 
   <!-- Road forces -->
   <div class="cg">
-    <div class="cg-title">🛣️ Road Forces (% of wheel power)</div>
+    <div class="cg-title"><svg class="ic"><use href="#ic-road"/></svg> Road Forces (% of wheel power)</div>
     <div class="cr">
       <div class="cl"><span class="cn">Aerodynamic Drag</span><span class="cv" id="v-aero" style="color:var(--orange)">10%</span></div>
       <input type="range" id="r-aero" min="2" max="40" step="1" value="10">
@@ -353,7 +370,7 @@ input[type=range].s-elec::-webkit-slider-thumb   { background:var(--elec);  box-
 
   <!-- Braking -->
   <div class="cg">
-    <div class="cg-title">🛑 Braking</div>
+    <div class="cg-title"><svg class="ic"><use href="#ic-brake"/></svg> Braking</div>
     <div class="tr2">
       <span class="tl">Regenerative Braking</span>
       <div class="tog" id="regen-tog" onclick="toggleRegen()"></div>
@@ -369,7 +386,7 @@ input[type=range].s-elec::-webkit-slider-thumb   { background:var(--elec);  box-
 
   <!-- Display -->
   <div class="cg">
-    <div class="cg-title">📊 Display</div>
+    <div class="cg-title"><svg class="ic"><use href="#ic-chart"/></svg> Display</div>
     <div class="tr2">
       <span class="tl">Show Dollar Costs</span>
       <div class="tog on" id="money-tog" onclick="toggleMoney()"></div>
@@ -390,7 +407,7 @@ input[type=range].s-elec::-webkit-slider-thumb   { background:var(--elec);  box-
     <div class="tb-sp"></div>
     <div class="eff-pill" id="eff-pill">Efficiency: —</div>
     <div class="law-pill"><em>E_in = E_out</em> · energy transforms, never disappears</div>
-    <button class="ref-btn" onclick="toggleRefs()">📚 Sources</button>
+    <button class="ref-btn" onclick="toggleRefs()"><svg class="ic"><use href="#ic-books"/></svg> Sources</button>
   </div>
   <div id="cw"><canvas id="cv"></canvas></div>
   <div id="cards"></div>
@@ -399,6 +416,8 @@ input[type=range].s-elec::-webkit-slider-thumb   { background:var(--elec);  box-
 
 <script>
 'use strict';
+
+function ico(n){return '<svg class="ic"><use href="#ic-'+n+'"/></svg>';}
 
 /* ── Constants ─────────────────────────────────────────────────── */
 const KJ_GAL = 132000;
@@ -774,7 +793,7 @@ function frame(ts){
   if(S.showMoney && wide){
     const totalWasted = en.engHeat + en.dtLoss + en.brkHeat;
     const rx = W - PR - 10, ry = PT + 6;
-    const line1 = '🔥  Heat wasted: ' + fmtD(totalWasted,en.cpkj) + ' / ' + fmtD(en.fuelKJ,en.cpkj);
+    const line1 = 'Heat wasted: ' + fmtD(totalWasted,en.cpkj) + ' / ' + fmtD(en.fuelKJ,en.cpkj);
     const line2 = (totalWasted/en.fuelKJ*100).toFixed(1) + '% of fuel becomes useless heat — 1st Law cannot be avoided';
     /* Measure both lines so the box always wraps the text exactly */
     const padX = 12, padY = 8, lineGap = 5;
@@ -841,14 +860,14 @@ function buildCards() {
     : null;
 
   const defs=[
-    { col:'#B5651D', icon:'⛽', lbl:'Total Input',             e:en.fuelKJ,           sub: S.fuelType==='gasoline'?S.fuelAmt.toFixed(1)+' gal':S.fuelAmt.toFixed(1)+' kWh' },
-    { col:'#A4373A', icon:'🌡️', lbl:'Engine Heat Loss',        e:en.engHeat,          sub: S.fuelType==='gasoline'?'Exhaust + cooling':'Motor heat' },
-    { col:'#BC8A2E', icon:'⚙️', lbl:'Drivetrain Friction',     e:en.dtLoss,           sub: 'Gears, differential' },
-    { col:'#C9722B', icon:'💨', lbl:'Aerodynamic Drag',        e:en.aero,             sub: 'Air resistance' },
-    { col:'#BC8A2E', icon:'🛞', lbl:'Rolling Resistance',      e:en.roll,             sub: 'Tire deformation' },
-    { col:'#A4373A', icon:'🛑', lbl:S.isRegen?'Braking Heat':'Braking → Heat', e:en.brkHeat, sub: S.isRegen?'Unconverted fraction':'All KE → heat' },
-    ...(S.isRegen&&en.regen>0.5?[{ col:'#3D6E70',icon:'⟳', lbl:'Regen Recovered', e:en.regen, sub:'Back to battery ✓' }]:[]),
-    { col:'#2D6A4F', icon:'✅', lbl:'Net Useful Work',         e:en.netKE+en.regen,   sub:'Overcomes aero+rolling' },
+    { col:'#B5651D', icon:ico(S.fuelType==='electric'?'bolt':'fuel'), lbl:'Total Input',             e:en.fuelKJ,           sub: S.fuelType==='gasoline'?S.fuelAmt.toFixed(1)+' gal':S.fuelAmt.toFixed(1)+' kWh' },
+    { col:'#A4373A', icon:ico('thermo'), lbl:'Engine Heat Loss',        e:en.engHeat,          sub: S.fuelType==='gasoline'?'Exhaust + cooling':'Motor heat' },
+    { col:'#BC8A2E', icon:ico('gear'), lbl:'Drivetrain Friction',     e:en.dtLoss,           sub: 'Gears, differential' },
+    { col:'#C9722B', icon:ico('wind'), lbl:'Aerodynamic Drag',        e:en.aero,             sub: 'Air resistance' },
+    { col:'#BC8A2E', icon:ico('tire'), lbl:'Rolling Resistance',      e:en.roll,             sub: 'Tire deformation' },
+    { col:'#A4373A', icon:ico('brake'), lbl:S.isRegen?'Braking Heat':'Braking → Heat', e:en.brkHeat, sub: S.isRegen?'Unconverted fraction':'All KE → heat' },
+    ...(S.isRegen&&en.regen>0.5?[{ col:'#3D6E70',icon:ico('regen'), lbl:'Regen Recovered', e:en.regen, sub:'Back to battery ✓' }]:[]),
+    { col:'#2D6A4F', icon:ico('check'), lbl:'Net Useful Work',         e:en.netKE+en.regen,   sub:'Overcomes aero+rolling' },
   ];
 
   const totalWasted = en.engHeat + en.dtLoss + en.brkHeat;
@@ -869,7 +888,7 @@ function buildCards() {
     }).join('')}
     ${S.showMoney ? `
     <div class="ec" style="color:#8A2F32;border-top-color:#A4373A;min-width:130px;background:rgba(164,55,58,.15)">
-      <div class="ci">🔥</div>
+      <div class="ci"><svg class="ic"><use href="#ic-flame"/></svg></div>
       <div class="cl2">Total Heat Wasted</div>
       <div class="cv2">${fmtE(totalWasted,en.fuelKJ)}</div>
       <div class="cs" style="color:#8A2F32">${fmtD(totalWasted,c)} thrown away</div>
@@ -891,14 +910,14 @@ function updatePill() {
 /* ── UI Sync ─────────────────────────────────────────────────── */
 function sync() {
   const isEV=S.fuelType==='electric';
-  document.getElementById('fuel-cg').textContent=isEV?'⚡ Energy Input':'⛽ Fuel Input';
+  document.getElementById('fuel-cg').innerHTML=isEV?ico('bolt')+' Energy Input':ico('fuel')+' Fuel Input';
   document.getElementById('fuel-lbl').textContent=isEV?'Energy (kWh)':'Gasoline (gallons)';
   document.getElementById('price-lbl').textContent=isEV?'Price ($/kWh)':'Price ($/gallon)';
   document.getElementById('v-fuel').textContent=S.fuelAmt.toFixed(1)+(isEV?' kWh':' gal');
   document.getElementById('v-price').textContent='$'+S.fuelPrice.toFixed(2)+(isEV?'/kWh':'/gal');
   document.getElementById('v-eng').textContent=S.engEff+'%';
   document.getElementById('eng-waste').textContent=(100-S.engEff)+'%';
-  document.getElementById('eng-cg').textContent=isEV?'⚡ Motor Efficiency':'🔥 Engine Efficiency';
+  document.getElementById('eng-cg').innerHTML=isEV?ico('bolt')+' Motor Efficiency':ico('flame')+' Engine Efficiency';
   document.getElementById('v-dt').textContent=S.dtEff+'%';
   document.getElementById('v-aero').textContent=S.aeroFrac+'%';
   document.getElementById('v-roll').textContent=S.rollFrac+'%';
@@ -973,42 +992,42 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeRefs();
   <div id="ref-body">
 
     <div class="rs">
-      <div class="rs-title">⛽  Fuel Energy Content</div>
+      <div class="rs-title"><svg class="ic"><use href="#ic-fuel"/></svg>  Fuel Energy Content</div>
       <div class="ri"><span class="rf">Gasoline ≈ 132,000 kJ/gallon (36.6 kWh/gal)</span><span class="rc">U.S. Energy Information Administration. <em>Energy Conversion Calculators.</em> <a href="https://www.eia.gov/energyexplained/units-and-calculators/energy-conversion-calculators.php" target="_blank">eia.gov ↗</a></span></div>
       <div class="ri"><span class="rf">Electricity: exactly 3,600 kJ per kWh</span><span class="rc">SI unit definition: 1 Wh ≡ 3,600 J.</span></div>
     </div>
 
     <div class="rs">
-      <div class="rs-title">🔥  Gasoline Engine Thermal Efficiency</div>
+      <div class="rs-title"><svg class="ic"><use href="#ic-flame"/></svg>  Gasoline Engine Thermal Efficiency</div>
       <div class="ri"><span class="rf">Typical gasoline engine: 20–35% thermal efficiency; best modern engines approach 40–45%</span><span class="rc">U.S. DOE, EERE. <em>Where the Energy Goes: Gasoline Vehicles.</em> <a href="https://www.fueleconomy.gov/feg/atv.shtml" target="_blank">fueleconomy.gov ↗</a></span></div>
       <div class="ri"><span class="rf">~68–72% of fuel energy exits as exhaust heat and engine cooling losses</span><span class="rc">Heywood, J. B. (2018). <em>Internal Combustion Engine Fundamentals</em> (2nd ed.). McGraw-Hill.</span></div>
     </div>
 
     <div class="rs">
-      <div class="rs-title">⚡  Electric Motor &amp; EV Efficiency</div>
+      <div class="rs-title"><svg class="ic"><use href="#ic-bolt"/></svg>  Electric Motor &amp; EV Efficiency</div>
       <div class="ri"><span class="rf">EV electric motor efficiency: 85–97%; combined battery-to-wheel efficiency ~77–85%</span><span class="rc">U.S. DOE, EERE. <em>Where the Energy Goes: Electric Vehicles.</em> <a href="https://www.fueleconomy.gov/feg/atv-ev.shtml" target="_blank">fueleconomy.gov ↗</a></span></div>
       <div class="ri"><span class="rf">EV well-to-wheel efficiency surpasses gasoline even after accounting for grid generation losses</span><span class="rc">Sioshansi, R. &amp; Denholm, P. (2009). <em>Emissions impacts of plug-in hybrid vehicles.</em> Environmental Science &amp; Technology, 43(4), 1199–1204.</span></div>
     </div>
 
     <div class="rs">
-      <div class="rs-title">⚙️  Drivetrain &amp; Transmission Losses</div>
+      <div class="rs-title"><svg class="ic"><use href="#ic-gear"/></svg>  Drivetrain &amp; Transmission Losses</div>
       <div class="ri"><span class="rf">Automatic transmissions: 86–94% efficient; manual: 94–97%; EV single-speed reducer: ~97–99%</span><span class="rc">Murphey, P. C., et al. (2013). <em>Energy Efficiency of Advanced Automatic Transmissions.</em> SAE Int'l. doi:10.4271/2013-01-0993</span></div>
     </div>
 
     <div class="rs">
-      <div class="rs-title">🛣️  Aerodynamic Drag &amp; Rolling Resistance</div>
+      <div class="rs-title"><svg class="ic"><use href="#ic-road"/></svg>  Aerodynamic Drag &amp; Rolling Resistance</div>
       <div class="ri"><span class="rf">Aerodynamic drag accounts for ~20% of tractive energy at highway speeds; lower in city driving</span><span class="rc">Davis, S. C., et al. (2022). <em>Transportation Energy Data Book,</em> Ed. 40. Oak Ridge National Laboratory. ORNL/TM-2021/2221.</span></div>
       <div class="ri"><span class="rf">Rolling resistance coefficient (Crr) for passenger tires: 0.007–0.015; contributes ~5–15% of tractive energy</span><span class="rc">Schuring, D. J. (1980). <em>The Rolling Loss of Pneumatic Tires.</em> Rubber Chemistry &amp; Technology, 53(3), 600–727.</span></div>
     </div>
 
     <div class="rs">
-      <div class="rs-title">🛑  Regenerative Braking</div>
+      <div class="rs-title"><svg class="ic"><use href="#ic-brake"/></svg>  Regenerative Braking</div>
       <div class="ri"><span class="rf">Regen systems recover 60–80% of available braking energy under ideal conditions</span><span class="rc">Gao, Y. &amp; Ehsani, M. (2001). <em>Electronic Braking System of EV and HEV.</em> SAE Technical Paper 2001-01-2478.</span></div>
       <div class="ri"><span class="rf">Full hybrids (e.g., Toyota Prius) achieve 20–35% better fuel economy largely through regen braking + Atkinson-cycle engine</span><span class="rc">Hermance, D. &amp; Sasaki, S. (1998). <em>Hybrid Electric Vehicles Take to the Streets.</em> IEEE Spectrum, 35(11), 48–52.</span></div>
     </div>
 
     <div class="rs">
-      <div class="rs-title">📐  First Law of Thermodynamics</div>
+      <div class="rs-title"><svg class="ic"><use href="#ic-ruler"/></svg>  First Law of Thermodynamics</div>
       <div class="ri"><span class="rf">Energy is conserved — it cannot be created or destroyed, only converted between forms (ΔU = Q − W)</span><span class="rc">Çengel, Y. A. &amp; Boles, M. A. (2018). <em>Thermodynamics: An Engineering Approach</em> (9th ed.), Ch. 2. McGraw-Hill.</span></div>
       <div class="ri"><span class="rf">The low thermal efficiency of heat engines is a consequence of the Second Law (Carnot limit), not merely poor engineering</span><span class="rc">Moran, M. J., et al. (2018). <em>Fundamentals of Engineering Thermodynamics</em> (9th ed.). Wiley.</span></div>
     </div>
